@@ -37,6 +37,8 @@ add_executable(
         src/ast/while_loop_node.c
         include/ast/while_loop_node.h
         include/ast/while_loop_node.h
+        include/ast/break_node.h
+        src/ast/break_node.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})

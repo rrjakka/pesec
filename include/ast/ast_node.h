@@ -10,6 +10,7 @@
 #include "statement_sequence_node.h"
 #include "condition_node.h"
 #include "while_loop_node.h"
+#include "break_node.h"
 
 #include "include/context.h"
 
@@ -24,6 +25,7 @@ typedef enum
     AST_NODE_STATEMENT_SEQUENCE,
     AST_NODE_CONDITION,
     AST_NODE_WHILE_LOOP,
+    AST_NODE_BREAK,
 } ast_node_type_t;
 
 typedef struct AST_NODE_STRUCT
@@ -40,6 +42,7 @@ typedef struct AST_NODE_STRUCT
         statement_sequence_node_t* statement_sequence;
         condition_node_t* condition;
         while_loop_node_t* while_loop;
+        break_node_t* _break;
     } node;
 } ast_node_t;
 

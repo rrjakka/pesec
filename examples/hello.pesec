@@ -1,1 +1,7 @@
-println(3 == 2);
+mutab  i = 0;
+while (true)
+{
+    if (i == 5) break;
+    i = i + 1;
+    println("i = ", i);
+};

@@ -34,6 +34,8 @@ ast_node_t *parser_parse_if(parser_t *parser);
 
 ast_node_t *parser_parse_while(parser_t *parser);
 
+ast_node_t *parser_parse_break(parser_t *parser);
+
 ast_node_t* parser_parse_statement(parser_t* parser);
 
 ast_node_t* parser_parse_comparison(parser_t* parser);

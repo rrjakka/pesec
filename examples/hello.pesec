@@ -1,7 +1,16 @@
-mutab  i = 0;
-while (true)
+mutab i = 0;
+
+mutab a = while (true)
 {
-    if (i == 5) break;
+    if (i == 5) { break i * i; };
     i = i + 1;
     println("i = ", i);
 };
+
+println("shiiii");
+println(i, " ", a);
+
+
+break;
+
+println("ohhhh");

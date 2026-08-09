@@ -13,7 +13,6 @@ bool value_get_boolean(const value_t value)
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);
-    exit(EXIT_FAILURE);
 }
 
 void value_print(const value_t value)
@@ -26,7 +25,6 @@ void value_print(const value_t value)
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);
-    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_add(const value_t left, const value_t right)
@@ -38,7 +36,6 @@ value_t value_operation_add(const value_t left, const value_t right)
         };
 
     fprintf(stderr, "Non number type can't use operator '+'\n");
-    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_sub(const value_t left, const value_t right)
@@ -50,7 +47,6 @@ value_t value_operation_sub(const value_t left, const value_t right)
         };
 
     fprintf(stderr, "Non number type can't use operator '-'\n");
-    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_mul(const value_t left, const value_t right)
@@ -62,7 +58,6 @@ value_t value_operation_mul(const value_t left, const value_t right)
         };
 
     fprintf(stderr, "Non number type can't use operator '*'\n");
-    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_div(const value_t left, const value_t right)
@@ -75,7 +70,6 @@ value_t value_operation_div(const value_t left, const value_t right)
         };
 
     fprintf(stderr, "Non number type can't use operator '/'\n");
-    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_equals(const value_t left, const value_t right)

@@ -39,18 +39,19 @@ int main(const int argc, char** argv)
     ast_node_t* ast = parser_parse(parser);
     context_t* context = context_new();
 
-    context_push(
-        context,
-        (string_view_t) {
-            .string="hello",
-            .length=5
-        },
-        (value_t){
-            .type=VALUE_TYPE_STRING,
-            .value.as_string=string_view_from("HELLO WORLD")
-        });
-
     const value_t result = ast_node_evaluate(ast, context);
+
+    switch (result.control_flow)
+    {
+    case CONTROL_FLOW_BREAK:
+        fprintf(stderr, "Break outside of loop\n");
+        break;
+    case CONTROL_FLOW_CONTINUE:
+        fprintf(stderr, "Continue outside of loop\n");
+        break;
+    default:
+        break;
+    }
 
     context_free(context);
     ast_node_free(ast);

@@ -2,6 +2,7 @@
 #define PESEC_VALUE_H
 
 #include "utils/string_view.h"
+#include "control_flow.h"
 
 typedef enum
 {
@@ -22,6 +23,7 @@ typedef struct
 {
     value_type_t type;
     value_value_t value;
+    control_flow_t control_flow;
 } value_t;
 
 bool value_get_boolean(value_t value);

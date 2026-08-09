@@ -31,7 +31,12 @@ value_t while_loop_node_evaluate(const while_loop_node_t* while_loop_node, conte
     while (value_get_boolean(ast_node_evaluate(while_loop_node->condition, context)))
     {
         result = ast_node_evaluate(while_loop_node->while_body, context);
-        // блять а как сделать брейк
+
+        if (result.control_flow == CONTROL_FLOW_BREAK)
+        {
+            result.control_flow = CONTROL_FLOW_NONE;
+            return result;
+        }
     }
 
     return result;

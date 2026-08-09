@@ -1,0 +1,11 @@
+#ifndef PESEC_CONTROL_FLOW_H
+#define PESEC_CONTROL_FLOW_H
+
+typedef enum
+{
+    CONTROL_FLOW_NONE,
+    CONTROL_FLOW_BREAK,
+    CONTROL_FLOW_CONTINUE,
+} control_flow_t;
+
+#endif // PESEC_CONTROL_FLOW_H

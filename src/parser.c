@@ -26,7 +26,10 @@ token_t parser_eat(parser_t *parser, const token_type_t type)
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
-        exit(EXIT_FAILURE);
+        return (token_t) {
+            .value.as_number = 0,
+            .type = TOKEN_TYPE_EOF
+        };
     }
     const token_t prev_token = parser->current_token;
     parser->current_token = lexer_next_token(parser->lexer);
@@ -157,7 +160,14 @@ ast_node_t *parser_parse_while(parser_t *parser)
 
 ast_node_t *parser_parse_break(parser_t *parser)
 {
-    return break_node_new();
+    ast_node_t* break_body = nullptr;
+
+    if (!parser_match(parser, TOKEN_TYPE_SEMICOLON))
+    {
+        break_body = parser_parse_statement(parser);
+    }
+
+    return break_node_new(break_body);
 }
 
 ast_node_t* parser_parse_statement(parser_t* parser)
@@ -257,7 +267,6 @@ ast_node_t *parser_parse_factor(parser_t *parser)
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
-        exit(EXIT_FAILURE);
     }
 
     return node;

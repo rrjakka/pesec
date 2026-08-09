@@ -8,9 +8,10 @@ typedef struct AST_NODE_STRUCT ast_node_t;
 
 typedef struct
 {
+    ast_node_t* expression;
 } break_node_t;
 
-ast_node_t* break_node_new();
+ast_node_t* break_node_new(ast_node_t* expression);
 
 void break_node_free(break_node_t* break_node);
 

@@ -61,13 +61,21 @@ value_t statement_sequence_node_evaluate(const statement_sequence_node_t* statem
     value_t result;
     result.type = VALUE_TYPE_NUMBER;
     result.value.as_number = 0;
+    result.control_flow = CONTROL_FLOW_NONE;
 
     const statement_sequence_node_queue_t* current = statement_sequence_node->statements;
 
     while (current)
     {
         if (current->statement)
+        {
             result = ast_node_evaluate(current->statement, context);
+
+            if (result.control_flow == CONTROL_FLOW_BREAK)
+            {
+                return result;
+            }
+        }
 
         current = current->next;
     }

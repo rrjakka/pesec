@@ -22,15 +22,14 @@ value_t break_node_evaluate(const break_node_t* break_node, context_t* context)
     value_t result;
 
     if (break_node->expression)
+    {
         result = ast_node_evaluate(break_node->expression, context);
+        result.control_flow = CONTROL_FLOW_BREAK;
+    }
     else
     {
-        result = (value_t) {
-            .type = VALUE_TYPE_NUMBER,
-            .value.as_number = 0
-        };
+        result = MAKE_VAL_NUM_CF(0, CONTROL_FLOW_BREAK);
     }
 
-    result.control_flow = CONTROL_FLOW_BREAK;
     return result;
 }

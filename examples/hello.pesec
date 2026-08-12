@@ -1,16 +1,6 @@
-mutab i = 0;
-
-mutab a = while (true)
+mutab f = fn()
 {
-    if (i == 5) { break i * i; };
-    i = i + 1;
-    println("i = ", i);
+    println("hai");
 };
 
-println("shiiii");
-println(i, " ", a);
-
-
-break;
-
-println("ohhhh");
+f();

@@ -45,9 +45,11 @@ int main(const int argc, char** argv)
     {
     case CONTROL_FLOW_BREAK:
         fprintf(stderr, "Break outside of loop\n");
+        exit(EXIT_FAILURE);
         break;
     case CONTROL_FLOW_CONTINUE:
         fprintf(stderr, "Continue outside of loop\n");
+        exit(EXIT_FAILURE);
         break;
     default:
         break;

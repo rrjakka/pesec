@@ -1,6 +1,14 @@
 #ifndef PESEC_VALUE_H
 #define PESEC_VALUE_H
 
+#define MAKE_VAL_STR(x) ((value_t) { .type = VALUE_TYPE_STRING, .value.as_string = x })
+#define MAKE_VAL_NUM(x) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x })
+#define MAKE_VAL_BOOL(x) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x })
+
+#define MAKE_VAL_STR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRING, .value.as_string = x, .control_flow = cf })
+#define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x, .control_flow = cf })
+#define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x, .control_flow = cf })
+
 #include "utils/string_view.h"
 #include "control_flow.h"
 

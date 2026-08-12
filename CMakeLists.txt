@@ -20,6 +20,7 @@ add_executable(
         src/ast/literal_node.c                      include/ast/literal_node.h
         src/ast/variable_node.c                     include/ast/variable_node.h
         src/ast/function_call_node.c                include/ast/function_call_node.h
+        src/ast/function_definition_node.c          include/ast/function_definition_node.h
         src/ast/statement_sequence_node.c           include/ast/statement_sequence_node.h
         src/ast/variable_definition_node.c          include/ast/variable_definition_node.h
         src/ast/variable_assignment_node.c          include/ast/variable_assignment_node.h

@@ -6,17 +6,17 @@
 
 typedef struct
 {
-    lexer_t* lexer;
+    lexer_t *lexer;
     token_t current_token;
 } parser_t;
 
-parser_t* parser_new(lexer_t* lexer);
+parser_t *parser_new(lexer_t *lexer);
 
-bool parser_match(const parser_t* parser, token_type_t type);
+bool parser_match(const parser_t *parser, token_type_t type);
 
-token_t parser_eat(parser_t* parser, token_type_t type);
+token_t parser_eat(parser_t *parser, token_type_t type);
 
-ast_node_t* parser_parse(parser_t* parser);
+ast_node_t *parser_parse(parser_t *parser);
 
 ast_node_t *parser_parse_statement_sequence(parser_t *parser, bool between_braces);
 
@@ -30,22 +30,24 @@ ast_node_t *parser_parse_variable_assignment(parser_t *parser, string_view_t nam
 
 ast_node_t *parser_parse_function_call(parser_t *parser, string_view_t name);
 
+ast_node_t *parser_parse_function_definition(parser_t *parser);
+
 ast_node_t *parser_parse_if(parser_t *parser);
 
 ast_node_t *parser_parse_while(parser_t *parser);
 
 ast_node_t *parser_parse_break(parser_t *parser);
 
-ast_node_t* parser_parse_statement(parser_t* parser);
+ast_node_t *parser_parse_statement(parser_t *parser);
 
-ast_node_t* parser_parse_comparison(parser_t* parser);
+ast_node_t *parser_parse_comparison(parser_t *parser);
 
-ast_node_t* parser_parse_expression(parser_t* parser);
+ast_node_t *parser_parse_expression(parser_t *parser);
 
-ast_node_t* parser_parse_term(parser_t* parser);
+ast_node_t *parser_parse_term(parser_t *parser);
 
-ast_node_t* parser_parse_factor(parser_t* parser);
+ast_node_t *parser_parse_factor(parser_t *parser);
 
-void parser_free(parser_t* parser);
+void parser_free(parser_t *parser);
 
 #endif // PESEC_PARSER_H

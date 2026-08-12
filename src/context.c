@@ -68,6 +68,7 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
     }
 
     fprintf(stderr, "Variable %.*s doesn't exist\n", key.length, key.string);
+    exit(EXIT_FAILURE);
 }
 
 void context_free(context_t* context)

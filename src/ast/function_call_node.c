@@ -18,35 +18,49 @@ ast_node_t* function_call_node_new(const string_view_t name, ast_node_t* argumen
 
 void function_call_node_free(function_call_node_t* function_call_node)
 {
-    ast_node_free(function_call_node->arguments);
+    if (function_call_node->arguments)
+        ast_node_free(function_call_node->arguments);
     free(function_call_node);
 }
 
 value_t function_call_node_evaluate(const function_call_node_t* function_call_node, context_t* context)
 {
-    const statement_sequence_node_queue_t* current = function_call_node->arguments->node.statement_sequence->statements;
-    const auto evaluated_values = (value_t*)calloc(function_call_node->arguments->node.statement_sequence->statements_count, sizeof(value_t));
+    unsigned long long statements_count = 0;
+    const statement_sequence_node_queue_t* current = nullptr;
+    value_t* evaluated_values = nullptr;
 
-    unsigned long long i = 0;
-    while (current)
+    if (function_call_node->arguments && function_call_node->arguments->node.statement_sequence)
     {
-        evaluated_values[i++] = ast_node_evaluate(current->statement, context);
-        current = current->next;
+        statements_count = function_call_node->arguments->node.statement_sequence->statements_count;
+        current = function_call_node->arguments->node.statement_sequence->statements;
+
+        if (statements_count > 0)
+        {
+            evaluated_values = (value_t*)calloc(statements_count, sizeof(value_t));
+            if (!evaluated_values)
+            {
+                return MAKE_VAL_NUM(0);
+            }
+        }
+    }
+
+    for (unsigned long long i = 0; current && i < statements_count; i++, current = current->next)
+    {
+        if (current->statement)
+            evaluated_values[i] = ast_node_evaluate(current->statement, context);
+        else
+            evaluated_values[i] = MAKE_VAL_NUM(0);
     }
 
     if (string_view_equals_cstr(function_call_node->name, "println"))
     {
-        for (i = 0; i < function_call_node->arguments->node.statement_sequence->statements_count; i++)
-        {
-            value_print(evaluated_values[i]);
-        }
+        for (unsigned long long j = 0; j < statements_count; j++)
+            value_print(evaluated_values[j]);
+
         printf("\n");
     }
 
     free(evaluated_values);
 
-    return (value_t) {
-        .type = VALUE_TYPE_NUMBER,
-        .value.as_number = 0,
-    };
+    return MAKE_VAL_NUM(0);
 }

@@ -26,6 +26,7 @@ token_t parser_eat(parser_t *parser, const token_type_t type)
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
+        exit(EXIT_FAILURE);
         return (token_t) {
             .value.as_number = 0,
             .type = TOKEN_TYPE_EOF
@@ -62,10 +63,11 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 {
     const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
 
-    if (string_view_equals_cstr(name, "true")) return literal_node_new((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = true });
-    if (string_view_equals_cstr(name, "false")) return literal_node_new((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = false });
+    if (string_view_equals_cstr(name, "true")) return literal_node_new(MAKE_VAL_BOOL(true));
+    if (string_view_equals_cstr(name, "false")) return literal_node_new(MAKE_VAL_BOOL(false));
 
     if (string_view_equals_cstr(name, "mutab")) return parser_parse_variable_definition(parser);
+    if (string_view_equals_cstr(name, "fn")) return parser_parse_function_definition(parser);
     if (string_view_equals_cstr(name, "if")) return parser_parse_if(parser);
     if (string_view_equals_cstr(name, "while")) return parser_parse_while(parser);
     if (string_view_equals_cstr(name, "break")) return parser_parse_break(parser);
@@ -86,10 +88,7 @@ ast_node_t *parser_parse_variable_definition(parser_t *parser)
 {
     const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
 
-    ast_node_t *value = literal_node_new((value_t){
-        .type = VALUE_TYPE_NUMBER,
-        .value.as_number = 0,
-    });
+    ast_node_t *value = literal_node_new(MAKE_VAL_NUM(0));
 
     if (parser_match(parser, TOKEN_TYPE_EQUALS))
     {
@@ -130,6 +129,19 @@ ast_node_t *parser_parse_function_call(parser_t *parser, const string_view_t nam
     parser_eat(parser, TOKEN_TYPE_RPAREN);
 
     return function_call_node_new(name, statement_sequence);
+}
+
+ast_node_t *parser_parse_function_definition(parser_t *parser)
+{
+    parser_eat(parser, TOKEN_TYPE_LPAREN);
+
+    // TODO: parameters parse
+
+    parser_eat(parser, TOKEN_TYPE_RPAREN);
+
+    ast_node_t *body = parser_parse_statement(parser);
+
+    return function_definition_node_new(body);
 }
 
 ast_node_t *parser_parse_if(parser_t *parser)
@@ -236,16 +248,10 @@ ast_node_t *parser_parse_factor(parser_t *parser)
     switch (parser->current_token.type)
     {
         case TOKEN_TYPE_NUMBER:
-            node = literal_node_new((value_t){
-                .type = VALUE_TYPE_NUMBER,
-                .value.as_number = parser_eat(parser, TOKEN_TYPE_NUMBER).value.as_number
-            });
+            node = literal_node_new(MAKE_VAL_NUM(parser_eat(parser, TOKEN_TYPE_NUMBER).value.as_number));
             break;
         case TOKEN_TYPE_STRING:
-            node = literal_node_new((value_t){
-                .type = VALUE_TYPE_STRING,
-                .value.as_string = parser_eat(parser, TOKEN_TYPE_STRING).value.as_string
-            });
+            node = literal_node_new(MAKE_VAL_STR(parser_eat(parser, TOKEN_TYPE_STRING).value.as_string));
             break;
         case TOKEN_TYPE_IDENTIFIER:
             node = parser_parse_identifier(parser);
@@ -267,6 +273,7 @@ ast_node_t *parser_parse_factor(parser_t *parser)
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
+        exit(EXIT_FAILURE);
     }
 
     return node;

@@ -13,6 +13,7 @@ bool value_get_boolean(const value_t value)
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);
+    exit(EXIT_FAILURE);
 }
 
 void value_print(const value_t value)
@@ -25,126 +26,87 @@ void value_print(const value_t value)
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);
+    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_add(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_NUMBER,
-            .value.as_number = left.value.as_number + right.value.as_number,
-        };
+        return MAKE_VAL_NUM(left.value.as_number + right.value.as_number);
 
     fprintf(stderr, "Non number type can't use operator '+'\n");
+    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_sub(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_NUMBER,
-            .value.as_number = left.value.as_number - right.value.as_number,
-        };
+        return MAKE_VAL_NUM(left.value.as_number - right.value.as_number);
 
     fprintf(stderr, "Non number type can't use operator '-'\n");
+    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_mul(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_NUMBER,
-            .value.as_number = left.value.as_number * right.value.as_number,
-        };
+        return MAKE_VAL_NUM(left.value.as_number * right.value.as_number);
 
     fprintf(stderr, "Non number type can't use operator '*'\n");
+    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_div(const value_t left, const value_t right)
 {
     // please never use right equal 0
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_NUMBER,
-            .value.as_number = left.value.as_number / right.value.as_number,
-        };
+        return MAKE_VAL_NUM(left.value.as_number / right.value.as_number);
 
     fprintf(stderr, "Non number type can't use operator '/'\n");
+    exit(EXIT_FAILURE);
 }
 
 value_t value_operation_equals(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = left.value.as_number == right.value.as_number,
-        };
-    if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = string_view_equals(left.value.as_string, right.value.as_string),
-        };
+        return MAKE_VAL_BOOL(left.value.as_number == right.value.as_number);
 
-    return (value_t) {
-        .type = VALUE_TYPE_BOOLEAN,
-        .value.as_bool = false,
-    };
+    if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
+        return MAKE_VAL_BOOL(string_view_equals(left.value.as_string, right.value.as_string));
+
+    return MAKE_VAL_BOOL(false);
 }
 
 value_t value_operation_less_or_equals(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = left.value.as_number <= right.value.as_number,
-        };
+        return MAKE_VAL_BOOL(left.value.as_number <= right.value.as_number);
 
-    return (value_t) {
-        .type = VALUE_TYPE_BOOLEAN,
-        .value.as_bool = false,
-    };
+    return MAKE_VAL_BOOL(false);
 }
 
 value_t value_operation_less(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = left.value.as_number < right.value.as_number,
-        };
+        return MAKE_VAL_BOOL(left.value.as_number < right.value.as_number);
 
-    return (value_t) {
-        .type = VALUE_TYPE_BOOLEAN,
-        .value.as_bool = false,
-    };
+    return MAKE_VAL_BOOL(false);
 }
 
 value_t value_operation_greater_or_equals(const value_t left, const value_t right)
 {
 
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = left.value.as_number >= right.value.as_number,
-        };
+        return MAKE_VAL_BOOL(left.value.as_number >= right.value.as_number);
 
-    return (value_t) {
-        .type = VALUE_TYPE_BOOLEAN,
-        .value.as_bool = false,
-    };
+    return MAKE_VAL_BOOL(false);
 }
 
 value_t value_operation_greater(const value_t left, const value_t right)
 {
 
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return (value_t) {
-            .type = VALUE_TYPE_BOOLEAN,
-            .value.as_bool = left.value.as_number > right.value.as_number,
-        };
+        return MAKE_VAL_BOOL(left.value.as_number > right.value.as_number);
 
-    return (value_t) {
-        .type = VALUE_TYPE_BOOLEAN,
-        .value.as_bool = false,
-    };
+    return MAKE_VAL_BOOL(false);
 }

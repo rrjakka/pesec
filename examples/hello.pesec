@@ -1,3 +1,9 @@
-mutab fact = fn(n) if (n == 0) 1 else n * fact(n - 1);
+mutab point = map {
+    x: 0,
+    y: 0
+};
 
-println(fact(5));
+point.x = 10;
+
+println(point.x);
+println(point.y);

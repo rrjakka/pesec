@@ -67,6 +67,11 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
         node = node->next;
     }
 
+    if (context->parent)
+    {
+        return context_get(context->parent, key);
+    }
+
     fprintf(stderr, "Variable %.*s doesn't exist\n", key.length, key.string);
     exit(EXIT_FAILURE);
 }

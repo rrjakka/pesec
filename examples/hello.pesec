@@ -7,6 +7,14 @@ f();
 
 mutab k = 10;
 
-f = fn(a, b) a * b;
+f = fn(n) {
+    mutab r = 1;
+    while (n > 0)
+    {
+        r = r * n;
+        n = n - 1;
+    };
+    r;
+};
 
-println(f(3, 4));
+println(f(5));

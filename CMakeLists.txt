@@ -11,6 +11,7 @@ add_executable(
         src/token.c                                 include/token.h
         src/parser.c                                include/parser.h
         src/value.c                                 include/value.h
+        src/function_value.c                        include/function_value.h
         src/control_flow.c                          include/control_flow.h
 
         src/utils/string_view.c                     include/utils/string_view.h

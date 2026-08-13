@@ -10,6 +10,7 @@ bool value_get_boolean(const value_t value)
         case VALUE_TYPE_NUMBER: return value.value.as_number != 0;
         case VALUE_TYPE_STRING: return value.value.as_string.length != 0;
         case VALUE_TYPE_BOOLEAN: return value.value.as_bool;
+        case VALUE_TYPE_FUNCTION: return true;
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);
@@ -23,6 +24,7 @@ void value_print(const value_t value)
         case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
         case VALUE_TYPE_STRING: printf("%.*s", value.value.as_string.length, value.value.as_string.string); return;
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
+        case VALUE_TYPE_FUNCTION: printf("<function>"); return;
     }
 
     fprintf(stderr, "Value type '%d' is not a valid value type\n", value.type);

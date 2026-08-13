@@ -5,6 +5,8 @@
 #include "include/ast/ast_node.h"
 #include <stdlib.h>
 
+#include "include/function_value.h"
+
 
 ast_node_t* function_call_node_new(const string_view_t name, ast_node_t* arguments)
 {
@@ -58,6 +60,18 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
             value_print(evaluated_values[j]);
 
         printf("\n");
+    }
+    else
+    {
+        const context_item_t* function = context_get(context, function_call_node->name);
+
+        if (function->value.type != VALUE_TYPE_FUNCTION)
+        {
+            fprintf(stderr, "variable %.*s not a function\n", function->key.length, function->key.string);
+            exit(EXIT_FAILURE);
+        }
+
+        function_value_call(function->value.value.as_function, context);
     }
 
     free(evaluated_values);

@@ -4,3 +4,7 @@ mutab f = fn()
 };
 
 f();
+
+f = fn() println("hello");
+
+f();

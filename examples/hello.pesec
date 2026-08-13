@@ -5,7 +5,8 @@ mutab f = fn()
 
 f();
 
-f = fn(a, b) println(a + b);
+mutab k = 10;
 
-f(1, 2);
-f(3, 4);
+f = fn(a, b) a * b;
+
+println(f(3, 4));

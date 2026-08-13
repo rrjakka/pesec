@@ -2,15 +2,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-context_t* context_new()
+context_t* context_new(context_t* parent)
 {
     const auto context = (context_t*)malloc(sizeof(context_t));
 
     context->capacity = 256;
     context->size = 0;
     context->items = (context_item_t**)calloc(context->capacity,sizeof(context_item_t*));
+    context->parent = parent;
 
     return context;
 }

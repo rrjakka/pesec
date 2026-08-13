@@ -23,14 +23,16 @@ void while_loop_node_free(while_loop_node_t* while_loop_node)
 
 value_t while_loop_node_evaluate(const while_loop_node_t* while_loop_node, context_t* context)
 {
+    context_t* local_context = context_new(context);
+
     value_t result = {
         .type = VALUE_TYPE_NUMBER,
         .value.as_number = 0
     };
 
-    while (value_get_boolean(ast_node_evaluate(while_loop_node->condition, context)))
+    while (value_get_boolean(ast_node_evaluate(while_loop_node->condition, local_context)))
     {
-        result = ast_node_evaluate(while_loop_node->while_body, context);
+        result = ast_node_evaluate(while_loop_node->while_body, local_context);
 
         if (result.control_flow == CONTROL_FLOW_BREAK)
         {

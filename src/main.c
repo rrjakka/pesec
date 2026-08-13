@@ -37,7 +37,7 @@ int main(const int argc, char** argv)
     lexer_t* lexer = lexer_new(source, source_size);
     parser_t* parser = parser_new(lexer);
     ast_node_t* ast = parser_parse(parser);
-    context_t* context = context_new();
+    context_t* context = context_new(nullptr);
 
     const value_t result = ast_node_evaluate(ast, context);
 

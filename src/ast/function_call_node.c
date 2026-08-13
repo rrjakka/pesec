@@ -27,10 +27,11 @@ void function_call_node_free(function_call_node_t* function_call_node)
 
 value_t function_call_node_evaluate(const function_call_node_t* function_call_node, context_t* context)
 {
-    // бляяяя
     unsigned long long statements_count = 0;
     const statement_sequence_node_queue_t* current = nullptr;
     value_t* evaluated_values = nullptr;
+
+    auto result = MAKE_VAL_NUM(0);
 
     if (function_call_node->arguments && function_call_node->arguments->node.statement_sequence)
     {
@@ -86,20 +87,24 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
             exit(EXIT_FAILURE);
         }
 
-        parameter_queue_t* parameter = function->parameter->parameters;
+        context_t* local_context = context_new(context);
+
+        const parameter_queue_t* parameter = function->parameter->parameters;
 
         for (unsigned long long i = 0; parameter; ++i, parameter = parameter->next)
         {
-            context_push(context, parameter->value, evaluated_values[i]);
+            context_push(local_context, parameter->value, evaluated_values[i]);
         }
 
-        function_value_call(
+        result = function_value_call(
             function,
-            context
+            local_context
         );
+
+        context_free(local_context);
     }
 
     free(evaluated_values);
 
-    return MAKE_VAL_NUM(0);
+    return result;
 }

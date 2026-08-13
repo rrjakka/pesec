@@ -65,11 +65,13 @@ value_t statement_sequence_node_evaluate(const statement_sequence_node_t* statem
 
     const statement_sequence_node_queue_t* current = statement_sequence_node->statements;
 
+    context_t* local_context = context_new(context);
+
     while (current)
     {
         if (current->statement)
         {
-            result = ast_node_evaluate(current->statement, context);
+            result = ast_node_evaluate(current->statement, local_context);
 
             if (result.control_flow == CONTROL_FLOW_BREAK)
             {

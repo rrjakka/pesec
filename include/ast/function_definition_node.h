@@ -3,15 +3,17 @@
 
 #include "include/value.h"
 #include "include/context.h"
+#include "include/parameter.h"
 
 typedef struct AST_NODE_STRUCT ast_node_t;
 
 typedef struct
 {
+    parameter_t* parameter;
     ast_node_t* body;
 } function_definition_node_t;
 
-ast_node_t* function_definition_node_new(ast_node_t* body);
+ast_node_t* function_definition_node_new(parameter_t* parameter, ast_node_t* body);
 
 void function_definition_node_free(function_definition_node_t* function_definition_node);
 

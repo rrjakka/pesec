@@ -5,6 +5,7 @@ mutab f = fn()
 
 f();
 
-f = fn() println("hello");
+f = fn(a, b) println(a + b);
 
-f();
+f(1, 2);
+f(3, 4);

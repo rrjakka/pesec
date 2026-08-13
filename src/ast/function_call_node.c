@@ -27,13 +27,14 @@ void function_call_node_free(function_call_node_t* function_call_node)
 
 value_t function_call_node_evaluate(const function_call_node_t* function_call_node, context_t* context)
 {
+    // бляяяя
     unsigned long long statements_count = 0;
     const statement_sequence_node_queue_t* current = nullptr;
     value_t* evaluated_values = nullptr;
 
     if (function_call_node->arguments && function_call_node->arguments->node.statement_sequence)
     {
-        statements_count = function_call_node->arguments->node.statement_sequence->statements_count;
+        statements_count = function_call_node->arguments->node.statement_sequence->count;
         current = function_call_node->arguments->node.statement_sequence->statements;
 
         if (statements_count > 0)
@@ -63,15 +64,39 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
     }
     else
     {
-        const context_item_t* function = context_get(context, function_call_node->name);
+        const context_item_t* variable = context_get(context, function_call_node->name);
 
-        if (function->value.type != VALUE_TYPE_FUNCTION)
+        if (variable->value.type != VALUE_TYPE_FUNCTION)
         {
-            fprintf(stderr, "variable %.*s not a function\n", function->key.length, function->key.string);
+            fprintf(stderr, "variable %.*s not a function\n", variable->key.length, variable->key.string);
             exit(EXIT_FAILURE);
         }
 
-        function_value_call(function->value.value.as_function, context);
+        const auto function = variable->value.value.as_function;
+
+
+        if (function->parameter->count != statements_count)
+        {
+            fprintf(
+                stderr,
+                "function %.*s takes %llu but %llu given\n",
+                variable->key.length, variable->key.string,
+                function->parameter->count, statements_count
+                );
+            exit(EXIT_FAILURE);
+        }
+
+        parameter_queue_t* parameter = function->parameter->parameters;
+
+        for (unsigned long long i = 0; parameter; ++i, parameter = parameter->next)
+        {
+            context_push(context, parameter->value, evaluated_values[i]);
+        }
+
+        function_value_call(
+            function,
+            context
+        );
     }
 
     free(evaluated_values);

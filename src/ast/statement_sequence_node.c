@@ -9,13 +9,13 @@ ast_node_t* statement_sequence_node_new()
     node->type = AST_NODE_STATEMENT_SEQUENCE;
     node->node.statement_sequence = (statement_sequence_node_t*)malloc(sizeof(statement_sequence_node_t));
     node->node.statement_sequence->statements = nullptr;
-    node->node.statement_sequence->statements_count = 0;
+    node->node.statement_sequence->count = 0;
     return node;
 }
 
 void statement_sequence_node_push(statement_sequence_node_t* statement_sequence_node, ast_node_t* statement)
 {
-    ++statement_sequence_node->statements_count;
+    ++statement_sequence_node->count;
 
     const auto new_node = (statement_sequence_node_queue_t*)malloc(sizeof(statement_sequence_node_queue_t));
 

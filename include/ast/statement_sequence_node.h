@@ -15,7 +15,7 @@ typedef struct STATEMENT_SEQUENCE_NODE_QUEUE_STRUCT
 
 typedef struct
 {
-    unsigned long long statements_count;
+    unsigned long long count;
     statement_sequence_node_queue_t* statements;
 } statement_sequence_node_t;
 

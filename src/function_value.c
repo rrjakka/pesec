@@ -4,10 +4,11 @@
 
 #include "include/ast/ast_node.h"
 
-function_value_t* function_value_new(ast_node_t* body)
+function_value_t* function_value_new(parameter_t* parameter, ast_node_t* body)
 {
     const auto function_value = (function_value_t*) malloc(sizeof(function_value_t));
     function_value->body = body;
+    function_value->parameter = parameter;
     return function_value;
 }
 
@@ -17,9 +18,7 @@ void function_value_free(function_value_t* function_value)
     free(function_value);
 }
 
-value_t function_value_call(function_value_t* function_value, context_t* context)
+value_t function_value_call(const function_value_t* function_value, context_t* context)
 {
-    // TODO: local context
-    const value_t result = ast_node_evaluate(function_value->body, context);
-    return result;
+    return ast_node_evaluate(function_value->body, context);
 }

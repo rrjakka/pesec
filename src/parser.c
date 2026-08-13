@@ -133,15 +133,27 @@ ast_node_t *parser_parse_function_call(parser_t *parser, const string_view_t nam
 
 ast_node_t *parser_parse_function_definition(parser_t *parser)
 {
+    parameter_t* parameter = parameter_new();
+
     parser_eat(parser, TOKEN_TYPE_LPAREN);
 
-    // TODO: parameters parse
+
+    if (!parser_match(parser, TOKEN_TYPE_RPAREN))
+    {
+        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+
+        while (parser_match(parser, TOKEN_TYPE_COMMA))
+        {
+            parser_eat(parser, TOKEN_TYPE_COMMA);
+            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+        }
+    }
 
     parser_eat(parser, TOKEN_TYPE_RPAREN);
 
     ast_node_t *body = parser_parse_statement(parser);
 
-    return function_definition_node_new(body);
+    return function_definition_node_new(parameter, body);
 }
 
 ast_node_t *parser_parse_if(parser_t *parser)

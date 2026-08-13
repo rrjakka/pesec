@@ -1,20 +1,3 @@
-mutab f = fn()
-{
-    println("hai");
-};
+mutab fact = fn(n) if (n == 0) 1 else n * fact(n - 1);
 
-f();
-
-mutab k = 10;
-
-f = fn(n) {
-    mutab r = 1;
-    while (n > 0)
-    {
-        r = r * n;
-        n = n - 1;
-    };
-    r;
-};
-
-println(f(5));
+println(fact(5));

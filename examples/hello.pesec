@@ -1,9 +1,3 @@
-mutab point = map {
-    x: 0,
-    y: 0
-};
+mutab f = fn(n) if (n <= 1) 1 else n * f(n - 1);
 
-point.x = 10;
-
-println(point.x);
-println(point.y);
+println(f(5));

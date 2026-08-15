@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/utils/throw.h"
+
 value_t ast_node_evaluate(const ast_node_t* node, context_t* context)
 {
     switch(node->type)
@@ -20,8 +22,7 @@ value_t ast_node_evaluate(const ast_node_t* node, context_t* context)
         case AST_NODE_BREAK: return break_node_evaluate(node->node._break, context);
     }
 
-    fprintf(stderr, "Unknown node type: %d\n", node->type);
-    exit(EXIT_FAILURE);
+    THROW("Unknown node type: %d\n", node->type);
 }
 
 void ast_node_free(ast_node_t* node)

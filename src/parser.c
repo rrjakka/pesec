@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/utils/throw.h"
+
 
 parser_t *parser_new(lexer_t *lexer)
 {
@@ -23,14 +25,10 @@ token_t parser_eat(parser_t *parser, const token_type_t type)
 {
     if (!parser_match(parser, type))
     {
+
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
-        exit(EXIT_FAILURE);
-        return (token_t) {
-            .value.as_number = 0,
-            .type = TOKEN_TYPE_EOF
-        };
     }
     const token_t prev_token = parser->current_token;
     parser->current_token = lexer_next_token(parser->lexer);
@@ -282,10 +280,7 @@ ast_node_t *parser_parse_factor(parser_t *parser)
 
     if (!node)
     {
-        fprintf(stderr, "Unexpected token ");
-        token_print(stderr, parser->current_token);
-        fprintf(stderr, "\n");
-        exit(EXIT_FAILURE);
+        THROW("unexpected token type '%d'", parser->current_token.type);
     }
 
     return node;

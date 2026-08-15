@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "include/utils/throw.h"
+
 
 lexer_t* lexer_new(char* source, const unsigned long long length)
 {
@@ -21,8 +23,7 @@ void lexer_advance(lexer_t* lexer)
 {
     if (!lexer_can_advance(lexer))
     {
-        fprintf(stderr, "EOF reached, can't advance");
-        exit(EXIT_FAILURE);
+        THROW("EOF reached, can't advance");
     }
 
     lexer->i++;
@@ -69,8 +70,7 @@ token_t lexer_next_number(lexer_t* lexer)
         {
             if (has_dot)
             {
-                fprintf(stderr, "Invalid number");
-                exit(EXIT_FAILURE);
+                THROW("Invalid number\n");
             }
             has_dot = true;
         }
@@ -193,8 +193,7 @@ token_t lexer_next_operator(lexer_t* lexer)
         case '*': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from("*"), .type = TOKEN_TYPE_ASTERISK };
         case '/': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from("/"), .type = TOKEN_TYPE_SLASH };
         default:
-            fprintf(stderr, "Unknown character: '%c'\n", current_char);
-            exit(EXIT_FAILURE);
+            THROW("Unknown character: '%c'\n", current_char);
     }
 }
 

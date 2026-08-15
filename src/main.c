@@ -4,7 +4,7 @@
 #include "include/lexer.h"
 #include "include/parser.h"
 #include "include/context.h"
-
+#include "include/utils/throw.h"
 
 
 int main(const int argc, char** argv)
@@ -23,8 +23,7 @@ int main(const int argc, char** argv)
 
     if (!file)
     {
-        fprintf(stderr, "Could not open file %s\n", filename);
-        return EXIT_FAILURE;
+        THROW("Could not open file %s\n", filename);
     }
 
     fseek(file, 0, SEEK_END);
@@ -44,12 +43,10 @@ int main(const int argc, char** argv)
     switch (result.control_flow)
     {
     case CONTROL_FLOW_BREAK:
-        fprintf(stderr, "Break outside of loop\n");
-        exit(EXIT_FAILURE);
+        THROW("Break outside of loop\n");
         break;
     case CONTROL_FLOW_CONTINUE:
-        fprintf(stderr, "Continue outside of loop\n");
-        exit(EXIT_FAILURE);
+        THROW("Continue outside of loop\n");
         break;
     default:
         break;
@@ -59,8 +56,6 @@ int main(const int argc, char** argv)
     ast_node_free(ast);
     lexer_free(lexer);
     parser_free(parser);
-
-    // printf("finished with %Lf", result);
 
     return EXIT_SUCCESS;
 }

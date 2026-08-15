@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/utils/throw.h"
+
 context_t* context_new(context_t* parent)
 {
     const auto context = (context_t*)malloc(sizeof(context_t));
@@ -72,8 +74,7 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
         return context_get(context->parent, key);
     }
 
-    fprintf(stderr, "Variable %.*s doesn't exist\n", key.length, key.string);
-    exit(EXIT_FAILURE);
+    THROW("Variable %.*s doesn't exist\n", key.length, key.string);
 }
 
 void context_free(context_t* context)

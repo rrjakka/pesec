@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "include/function_value.h"
+#include "include/utils/throw.h"
 
 
 ast_node_t* function_call_node_new(const string_view_t name, ast_node_t* arguments)
@@ -69,8 +70,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
 
         if (variable->value.type != VALUE_TYPE_FUNCTION)
         {
-            fprintf(stderr, "variable %.*s not a function\n", variable->key.length, variable->key.string);
-            exit(EXIT_FAILURE);
+            THROW("variable %.*s not a function\n", variable->key.length, variable->key.string);
         }
 
         const auto function = variable->value.value.as_function;
@@ -78,13 +78,11 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
 
         if (function->parameter->count != statements_count)
         {
-            fprintf(
-                stderr,
+            THROW(
                 "function %.*s takes %llu but %llu given\n",
                 variable->key.length, variable->key.string,
                 function->parameter->count, statements_count
                 );
-            exit(EXIT_FAILURE);
         }
 
         context_t* local_context = context_new(context);

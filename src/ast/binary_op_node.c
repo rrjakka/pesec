@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "include/ast/ast_node.h"
+#include "include/utils/throw.h"
 
 ast_node_t* binary_op_node_new(const token_t operation, ast_node_t* left, ast_node_t* right)
 {
@@ -41,7 +42,6 @@ value_t binary_op_node_evaluate(const binary_op_node_t* binary_op_node, context_
         case TOKEN_TYPE_GREATER_EQUALS: return value_operation_greater_or_equals(left_value, right_value);
         case TOKEN_TYPE_GREATER: return value_operation_greater(left_value, right_value);
         default:
-            fprintf(stderr, "Unknown binary operator type %d\n", binary_op_node->operation.type);
-            exit(EXIT_FAILURE);
+            THROW("Unknown binary operator type %d\n", binary_op_node->operation.type);
     }
 }

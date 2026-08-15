@@ -5,16 +5,19 @@
 #define MAKE_VAL_NUM(x) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x })
 #define MAKE_VAL_BOOL(x) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x })
 #define MAKE_VAL_FUNC(x) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x })
+#define MAKE_VAL_STRUCT(x) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x })
 
 #define MAKE_VAL_STR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRING, .value.as_string = x, .control_flow = cf })
 #define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x, .control_flow = cf })
 #define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x, .control_flow = cf })
 #define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x, .control_flow = cf })
+#define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x, .control_flow = cf })
 
 #include "utils/string_view.h"
 #include "control_flow.h"
 
 typedef struct FUNCTION_VALUE_STRUCT function_value_t;
+typedef struct STRUCTURE_VALUE_STRUCT structure_value_t;
 
 typedef enum
 {
@@ -22,6 +25,7 @@ typedef enum
     VALUE_TYPE_NUMBER,
     VALUE_TYPE_BOOLEAN,
     VALUE_TYPE_FUNCTION,
+    VALUE_TYPE_STRUCTURE,
 } value_type_t;
 
 typedef union
@@ -30,6 +34,7 @@ typedef union
     long double as_number;
     bool as_bool;
     function_value_t* as_function;
+    structure_value_t* as_structure;
 } value_value_t;
 
 typedef struct

@@ -63,6 +63,7 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 
     if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, name);
     if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, name);
+    if (parser_match(parser, TOKEN_TYPE_DOT))    return parser_parse_structure_field(parser, name);
 
     return parser_parse_variable(parser, name);
 }
@@ -76,6 +77,7 @@ ast_node_t *parser_parse_keyword(parser_t *parser)
 
     if (string_view_equals_cstr(name, "mutab")) return parser_parse_variable_definition(parser);
     if (string_view_equals_cstr(name, "fn")) return parser_parse_function_definition(parser);
+    if (string_view_equals_cstr(name, "struct")) return parser_parse_structure_definition(parser);
     if (string_view_equals_cstr(name, "if")) return parser_parse_if(parser);
     if (string_view_equals_cstr(name, "while")) return parser_parse_while(parser);
     if (string_view_equals_cstr(name, "break")) return parser_parse_break(parser);
@@ -158,6 +160,56 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
     ast_node_t *body = parser_parse_statement(parser);
 
     return function_definition_node_new(parameter, body);
+}
+
+ast_node_t *parser_parse_structure_definition(parser_t *parser)
+{
+    parameter_t* parameter = parameter_new();
+    ast_node_t* values = statement_sequence_node_new();
+
+    parser_eat(parser, TOKEN_TYPE_LBRACE);
+
+    if (!parser_match(parser, TOKEN_TYPE_RBRACE))
+    {
+        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+        if (parser_match(parser, TOKEN_TYPE_EQUALS))
+        {
+            parser_eat(parser, TOKEN_TYPE_EQUALS);
+            statement_sequence_node_push(values->node.statement_sequence, parser_parse_statement(parser));
+        }
+        else
+        {
+            statement_sequence_node_push(values->node.statement_sequence, literal_node_new(MAKE_VAL_NUM(0)));
+        }
+
+        while (parser_match(parser, TOKEN_TYPE_COMMA))
+        {
+            parser_eat(parser, TOKEN_TYPE_COMMA);
+            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+            if (parser_match(parser, TOKEN_TYPE_EQUALS))
+            {
+                parser_eat(parser, TOKEN_TYPE_EQUALS);
+                statement_sequence_node_push(values->node.statement_sequence, parser_parse_statement(parser));
+            }
+            else
+            {
+                statement_sequence_node_push(values->node.statement_sequence, literal_node_new(MAKE_VAL_NUM(0)));
+            }
+        }
+    }
+
+    parser_eat(parser, TOKEN_TYPE_RBRACE);
+
+    return structure_definition_node_new(parameter, values);
+}
+
+ast_node_t *parser_parse_structure_field(parser_t *parser, const string_view_t name)
+{
+    parser_eat(parser, TOKEN_TYPE_DOT);
+
+    const token_t field = parser_eat(parser, TOKEN_TYPE_IDENTIFIER);
+
+    return structure_field_node_new(name, field.value.as_string);
 }
 
 ast_node_t *parser_parse_if(parser_t *parser)

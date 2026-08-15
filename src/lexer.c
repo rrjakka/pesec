@@ -53,7 +53,7 @@ token_t lexer_next_token(lexer_t* lexer)
         .type = TOKEN_TYPE_EOF
     };
 
-    if (isdigit(lexer_get_current_char(lexer)) || lexer_get_current_char(lexer) == '.') return lexer_next_number(lexer);
+    if (isdigit(lexer_get_current_char(lexer))) return lexer_next_number(lexer);
     if (isalpha(lexer_get_current_char(lexer)) || lexer_get_current_char(lexer) == '_') return lexer_next_identifier(lexer);
     if (lexer_get_current_char(lexer) == '"') return lexer_next_string(lexer);
     return lexer_next_operator(lexer);
@@ -115,6 +115,7 @@ token_t lexer_next_identifier(lexer_t* lexer)
         string_view_equals_cstr(value, "else") ||
         string_view_equals_cstr(value, "while") ||
         string_view_equals_cstr(value, "break") ||
+        string_view_equals_cstr(value, "struct") ||
         string_view_equals_cstr(value, "true") ||
         string_view_equals_cstr(value, "false")
         ) type = TOKEN_TYPE_KEYWORD;
@@ -150,6 +151,7 @@ token_t lexer_next_operator(lexer_t* lexer)
     const char current_char = lexer_get_current_char(lexer);
     switch (current_char)
     {
+        case '.': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from("."), .type = TOKEN_TYPE_DOT };
         case ',': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from(","), .type = TOKEN_TYPE_COMMA };
         case ';': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from(";"), .type = TOKEN_TYPE_SEMICOLON };
         case '(': lexer_advance(lexer); return (token_t){ .value.as_string = string_view_from("("), .type = TOKEN_TYPE_LPAREN };

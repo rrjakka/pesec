@@ -8,6 +8,8 @@
 #include "variable_assignment_node.h"
 #include "function_call_node.h"
 #include "function_definition_node.h"
+#include "structure_definition_node.h"
+#include "structure_field_node.h"
 #include "statement_sequence_node.h"
 #include "condition_node.h"
 #include "while_loop_node.h"
@@ -24,6 +26,8 @@ typedef enum
     AST_NODE_VARIABLE_ASSIGNMENT,
     AST_NODE_FUNCTION_CALL,
     AST_NODE_FUNCTION_DEFINITION,
+    AST_NODE_STRUCTURE_DEFINITION,
+    AST_NODE_STRUCTURE_FIELD,
     AST_NODE_STATEMENT_SEQUENCE,
     AST_NODE_CONDITION,
     AST_NODE_WHILE_LOOP,
@@ -42,6 +46,8 @@ typedef struct AST_NODE_STRUCT
         variable_assignment_node_t* variable_assignment;
         function_call_node_t* function_call;
         function_definition_node_t* function_definition;
+        structure_definition_node_t* structure_definition;
+        structure_field_node_t* structure_field;
         statement_sequence_node_t* statement_sequence;
         condition_node_t* condition;
         while_loop_node_t* while_loop;

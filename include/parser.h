@@ -34,6 +34,10 @@ ast_node_t *parser_parse_function_call(parser_t *parser, string_view_t name);
 
 ast_node_t *parser_parse_function_definition(parser_t *parser);
 
+ast_node_t *parser_parse_structure_definition(parser_t *parser);
+
+ast_node_t *parser_parse_structure_field(parser_t *parser, string_view_t name);
+
 ast_node_t *parser_parse_if(parser_t *parser);
 
 ast_node_t *parser_parse_while(parser_t *parser);

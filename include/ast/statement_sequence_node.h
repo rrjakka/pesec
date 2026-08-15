@@ -13,7 +13,7 @@ typedef struct STATEMENT_SEQUENCE_NODE_QUEUE_STRUCT
     statement_sequence_node_queue_t* next;
 } statement_sequence_node_queue_t;
 
-typedef struct
+typedef struct STATEMENT_SEQUENCE_NODE_STRUCT
 {
     unsigned long long count;
     statement_sequence_node_queue_t* statements;

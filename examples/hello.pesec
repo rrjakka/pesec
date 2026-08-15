@@ -1,3 +1,13 @@
-mutab f = fn(n) if (n <= 1) 1 else n * f(n - 1);
+mutab point_new = fn(a, b) {
+    struct { x=a, y=b };
+};
 
-println(f(1000));
+mutab p1 = point_new(12, 34);
+mutab p2 = point_new("Hello", "World");
+
+mutab point_print = fn(p) {
+    println("{", p.x, ", ", p.y, "}");
+};
+
+point_print(p1);
+point_print(p2);

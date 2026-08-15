@@ -6,7 +6,7 @@ mutab p1 = point_new(12, 34);
 mutab p2 = point_new("Hello", "World");
 
 mutab point_print = fn(p) {
-    println("{", p.x, ", ", p.y, "}");
+    println("{x=", p.x, ", y=", p.y, "}");
 };
 
 point_print(p1);

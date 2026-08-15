@@ -102,12 +102,26 @@ token_t lexer_next_identifier(lexer_t* lexer)
             lexer_get_current_char(lexer) == '_'
             )) lexer_advance(lexer);
 
+    const auto value = (string_view_t) {
+        .string = lexer->source + begin,
+        .length = lexer->i - begin,
+    };
+    token_type_t type = TOKEN_TYPE_IDENTIFIER;
+
+    if (string_view_equals_cstr(value, "mutab") ||
+        string_view_equals_cstr(value, "const") ||
+        string_view_equals_cstr(value, "fn") ||
+        string_view_equals_cstr(value, "if") ||
+        string_view_equals_cstr(value, "else") ||
+        string_view_equals_cstr(value, "while") ||
+        string_view_equals_cstr(value, "break") ||
+        string_view_equals_cstr(value, "true") ||
+        string_view_equals_cstr(value, "false")
+        ) type = TOKEN_TYPE_KEYWORD;
+
     return (token_t){
-        .value.as_string = {
-            .string = lexer->source + begin,
-            .length = lexer->i - begin,
-        },
-        .type = TOKEN_TYPE_IDENTIFIER,
+        .value.as_string = value,
+        .type = type,
     };
 }
 

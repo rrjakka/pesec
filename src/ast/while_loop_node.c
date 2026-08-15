@@ -41,5 +41,7 @@ value_t while_loop_node_evaluate(const while_loop_node_t* while_loop_node, conte
         }
     }
 
+    context_free(local_context);
+
     return result;
 }

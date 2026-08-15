@@ -22,6 +22,8 @@ ast_node_t *parser_parse_statement_sequence(parser_t *parser, bool between_brace
 
 ast_node_t *parser_parse_identifier(parser_t *parser);
 
+ast_node_t *parser_parse_keyword(parser_t *parser);
+
 ast_node_t *parser_parse_variable(parser_t *parser, string_view_t name);
 
 ast_node_t *parser_parse_variable_definition(parser_t *parser);

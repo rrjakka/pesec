@@ -61,6 +61,16 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 {
     const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
 
+    if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, name);
+    if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, name);
+
+    return parser_parse_variable(parser, name);
+}
+
+ast_node_t *parser_parse_keyword(parser_t *parser)
+{
+    const string_view_t name = parser_eat(parser, TOKEN_TYPE_KEYWORD).value.as_string;
+
     if (string_view_equals_cstr(name, "true")) return literal_node_new(MAKE_VAL_BOOL(true));
     if (string_view_equals_cstr(name, "false")) return literal_node_new(MAKE_VAL_BOOL(false));
 
@@ -70,11 +80,7 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
     if (string_view_equals_cstr(name, "while")) return parser_parse_while(parser);
     if (string_view_equals_cstr(name, "break")) return parser_parse_break(parser);
 
-    if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, name);
-
-    if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, name);
-
-    return parser_parse_variable(parser, name);
+    THROW("unknown keyword\n");
 }
 
 ast_node_t *parser_parse_variable(parser_t *parser, const string_view_t name)
@@ -161,10 +167,10 @@ ast_node_t *parser_parse_if(parser_t *parser)
     ast_node_t *if_body = parser_parse_statement(parser);
     ast_node_t *else_body = nullptr;
 
-    if (parser_match(parser, TOKEN_TYPE_IDENTIFIER) &&
+    if (parser_match(parser, TOKEN_TYPE_KEYWORD) &&
         string_view_equals_cstr(parser->current_token.value.as_string, "else"))
     {
-        parser_eat(parser, TOKEN_TYPE_IDENTIFIER);
+        parser_eat(parser, TOKEN_TYPE_KEYWORD);
         else_body = parser_parse_statement(parser);
     }
 
@@ -265,6 +271,9 @@ ast_node_t *parser_parse_factor(parser_t *parser)
             break;
         case TOKEN_TYPE_IDENTIFIER:
             node = parser_parse_identifier(parser);
+            break;
+        case TOKEN_TYPE_KEYWORD:
+            node = parser_parse_keyword(parser);
             break;
         case TOKEN_TYPE_LPAREN:
             parser_eat(parser, TOKEN_TYPE_LPAREN);

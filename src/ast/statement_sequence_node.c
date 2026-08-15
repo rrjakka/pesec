@@ -82,5 +82,7 @@ value_t statement_sequence_node_evaluate(const statement_sequence_node_t* statem
         current = current->next;
     }
 
+    context_free(local_context);
+
     return result;
 }

@@ -1,7 +1,4 @@
 # PESEC
 
-simple programming language
+PESEC - simple interpreted programming language where every statement returns value
 
----
-старая версия языка была написана на ~90% иишкой(дипсиком) и я был совсем не доволен тем, что получилось и что из себя представлял проект\
-сейчас пытаюсь сам разобраться :D

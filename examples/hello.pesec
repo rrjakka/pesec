@@ -1,3 +1,6 @@
 mutab f = fn(n) if (n <= 1) 1 else n * f(n - 1);
 
+
+mutab map = fn(function)
+
 println(f(5));

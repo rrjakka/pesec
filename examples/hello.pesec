@@ -1,13 +1,11 @@
-mutab point_new = fn(a, b) {
-    struct { x=a, y=b };
-};
+mutab f = fn() fn(x) println(x);
 
-mutab p1 = point_new(12, 34);
-mutab p2 = point_new("Hello", "World");
+mutab g = f();
+g("One");
 
-mutab point_print = fn(p) {
-    println("{x=", p.x, ", y=", p.y, "}");
-};
+(f())("Two");
+f()("Three");
 
-point_print(p1);
-point_print(p2);
+fn(x) {
+    println(x);
+}("Four");

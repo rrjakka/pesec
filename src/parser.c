@@ -29,11 +29,20 @@ token_t parser_eat(parser_t *parser, const token_type_t type)
         fprintf(stderr, "Unexpected token ");
         token_print(stderr, parser->current_token);
         fprintf(stderr, "\n");
+        exit(EXIT_FAILURE);
     }
     const token_t prev_token = parser->current_token;
     parser->current_token = lexer_next_token(parser->lexer);
 
     return prev_token;
+}
+
+ast_node_t* parser_check_and_parse_function_call(parser_t *parser, ast_node_t* callee)
+{
+    if (parser_match(parser, TOKEN_TYPE_LPAREN))
+        return parser_parse_function_call(parser, callee);
+
+    return callee;
 }
 
 ast_node_t *parser_parse(parser_t *parser)
@@ -61,7 +70,9 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 {
     const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
 
-    if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, name);
+    ast_node_t* variable_node = parser_parse_variable(parser, name);
+
+    if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, variable_node);
     if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, name);
     if (parser_match(parser, TOKEN_TYPE_DOT))    return parser_parse_structure_field(parser, name);
 
@@ -113,28 +124,25 @@ ast_node_t *parser_parse_variable_assignment(parser_t *parser, string_view_t nam
     return variable_assignment_node_new(name, value);
 }
 
-ast_node_t *parser_parse_function_call(parser_t *parser, const string_view_t name)
+ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee)
 {
     parser_eat(parser, TOKEN_TYPE_LPAREN);
 
-    if (parser_match(parser, TOKEN_TYPE_RPAREN))
-    {
-        parser_eat(parser, TOKEN_TYPE_RPAREN);
-        return function_call_node_new(name, nullptr);
-    }
-
     ast_node_t *statement_sequence = statement_sequence_node_new();
-    statement_sequence_node_push(statement_sequence->node.statement_sequence, parser_parse_statement(parser));
 
-    while (parser_match(parser, TOKEN_TYPE_COMMA))
+    if (!parser_match(parser, TOKEN_TYPE_RPAREN))
     {
-        parser_eat(parser, TOKEN_TYPE_COMMA);
         statement_sequence_node_push(statement_sequence->node.statement_sequence, parser_parse_statement(parser));
-    }
 
+        while (parser_match(parser, TOKEN_TYPE_COMMA))
+        {
+            parser_eat(parser, TOKEN_TYPE_COMMA);
+            statement_sequence_node_push(statement_sequence->node.statement_sequence, parser_parse_statement(parser));
+        }
+    }
     parser_eat(parser, TOKEN_TYPE_RPAREN);
 
-    return function_call_node_new(name, statement_sequence);
+    return parser_check_and_parse_function_call(parser, function_call_node_new(callee, statement_sequence));
 }
 
 ast_node_t *parser_parse_function_definition(parser_t *parser)
@@ -159,7 +167,7 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
 
     ast_node_t *body = parser_parse_statement(parser);
 
-    return function_definition_node_new(parameter, body);
+    return parser_check_and_parse_function_call(parser, function_definition_node_new(parameter, body));
 }
 
 ast_node_t *parser_parse_structure_definition(parser_t *parser)
@@ -331,6 +339,9 @@ ast_node_t *parser_parse_factor(parser_t *parser)
             parser_eat(parser, TOKEN_TYPE_LPAREN);
             node = parser_parse_statement(parser);
             parser_eat(parser, TOKEN_TYPE_RPAREN);
+
+            node = parser_check_and_parse_function_call(parser, node);
+
             break;
         case TOKEN_TYPE_LBRACE:
             node = parser_parse_statement_sequence(parser, true);

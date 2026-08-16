@@ -14,7 +14,7 @@ structure_value_t* structure_value_new()
 
 void structure_value_push(const structure_value_t* structure_value, string_view_t name, value_t value)
 {
-    context_push(structure_value->context, name, value);
+    context_push(structure_value->context, name, value, false);
 }
 
 void structure_value_set(const structure_value_t* structure_value, string_view_t name, value_t value)

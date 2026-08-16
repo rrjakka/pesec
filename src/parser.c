@@ -102,7 +102,8 @@ ast_node_t *parser_parse_keyword(parser_t *parser)
     if (string_view_equals_cstr(name, "true")) return literal_node_new(MAKE_VAL_BOOL(true));
     if (string_view_equals_cstr(name, "false")) return literal_node_new(MAKE_VAL_BOOL(false));
 
-    if (string_view_equals_cstr(name, "mutab")) return parser_parse_variable_definition(parser);
+    if (string_view_equals_cstr(name, "mutab")) return parser_parse_variable_definition(parser, false);
+    if (string_view_equals_cstr(name, "const")) return parser_parse_variable_definition(parser, true);
     if (string_view_equals_cstr(name, "fn")) return parser_parse_function_definition(parser);
     if (string_view_equals_cstr(name, "struct")) return parser_parse_structure_definition(parser);
     if (string_view_equals_cstr(name, "if")) return parser_parse_if(parser);
@@ -117,7 +118,7 @@ ast_node_t *parser_parse_variable(parser_t *parser, const string_view_t name)
     return variable_node_new(name);
 }
 
-ast_node_t *parser_parse_variable_definition(parser_t *parser)
+ast_node_t *parser_parse_variable_definition(parser_t *parser, const bool constant)
 {
     const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
 
@@ -129,7 +130,7 @@ ast_node_t *parser_parse_variable_definition(parser_t *parser)
         value = parser_parse_statement(parser);
     }
 
-    return variable_definition_node_new(name, value);
+    return variable_definition_node_new(name, value, constant);
 }
 
 ast_node_t *parser_parse_variable_assignment(parser_t *parser, ast_node_t* target)

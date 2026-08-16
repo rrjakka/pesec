@@ -11,9 +11,10 @@ typedef struct
 {
     string_view_t name;
     ast_node_t* value;
+    bool constant;
 } variable_definition_node_t;
 
-ast_node_t* variable_definition_node_new(string_view_t name, ast_node_t* value);
+ast_node_t* variable_definition_node_new(string_view_t name, ast_node_t* value, bool constant);
 
 void variable_definition_node_free(variable_definition_node_t* variable_definition_node);
 

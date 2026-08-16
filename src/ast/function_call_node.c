@@ -99,7 +99,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
 
     for (unsigned long long i = 0; parameter; ++i, parameter = parameter->next)
     {
-        context_push(local_context, parameter->value, evaluated_values[i]);
+        context_push(local_context, parameter->value, evaluated_values[i], false);
     }
 
     result = function_value_call(

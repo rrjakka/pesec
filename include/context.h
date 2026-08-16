@@ -11,6 +11,7 @@ typedef struct CONTEXT_ITEM_STRUCT
 {
     string_view_t key;
     value_t value;
+    bool constant;
     context_item_t* next;
 } context_item_t;
 
@@ -26,7 +27,7 @@ context_t* context_new(context_t* parent);
 
 unsigned long long context_hash(const context_t* context, string_view_t key);
 
-void context_push(const context_t* context, string_view_t key, value_t value);
+void context_push(const context_t* context, string_view_t key, value_t value, bool constant);
 
 void context_set(const context_t* context, string_view_t key, value_t value);
 

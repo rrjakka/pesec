@@ -32,7 +32,7 @@ ast_node_t *parser_parse_keyword(parser_t *parser);
 
 ast_node_t *parser_parse_variable(parser_t *parser, string_view_t name);
 
-ast_node_t *parser_parse_variable_definition(parser_t *parser);
+ast_node_t *parser_parse_variable_definition(parser_t *parser, bool constant);
 
 ast_node_t *parser_parse_variable_assignment(parser_t *parser, ast_node_t* target);
 

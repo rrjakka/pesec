@@ -27,13 +27,14 @@ unsigned long long context_hash(const context_t* context, const string_view_t ke
     return sum % context->capacity;
 }
 
-void context_push(const context_t* context, const string_view_t key, const value_t value)
+void context_push(const context_t* context, const string_view_t key, const value_t value, bool constant)
 {
     const unsigned long long hash_index = context_hash(context, key);
 
     const auto item = (context_item_t*)malloc(sizeof(context_item_t));
     item->key = key;
     item->value = value;
+    item->constant = constant;
     item->next = nullptr;
 
     context_item_t* node = context->items[hash_index];
@@ -52,6 +53,8 @@ void context_push(const context_t* context, const string_view_t key, const value
 void context_set(const context_t* context, const string_view_t key, const value_t value)
 {
     context_item_t* node = context_get(context, key);
+    if (node->constant)
+        THROW("Variable %.*s is constant\n", key.length, key.string);
     node->value = value;
 }
 

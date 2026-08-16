@@ -9,11 +9,11 @@ typedef struct AST_NODE_STRUCT ast_node_t;
 
 typedef struct
 {
-    string_view_t name;
+    ast_node_t* target;
     ast_node_t* value;
 } variable_assignment_node_t;
 
-ast_node_t* variable_assignment_node_new(string_view_t name, ast_node_t* value);
+ast_node_t* variable_assignment_node_new(ast_node_t* target, ast_node_t* value);
 
 void variable_assignment_node_free(variable_assignment_node_t* variable_assignment_node);
 

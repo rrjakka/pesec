@@ -26,9 +26,9 @@ token_t parser_eat(parser_t *parser, const token_type_t type)
     if (!parser_match(parser, type))
     {
 
-        fprintf(stderr, "Unexpected token ");
+        fprintf(stderr, "Unexpected token \"");
         token_print(stderr, parser->current_token);
-        fprintf(stderr, "\n");
+        fprintf(stderr, "\"\n");
         exit(EXIT_FAILURE);
     }
     const token_t prev_token = parser->current_token;
@@ -43,6 +43,22 @@ ast_node_t* parser_check_and_parse_function_call(parser_t *parser, ast_node_t* c
         return parser_parse_function_call(parser, callee);
 
     return callee;
+}
+
+ast_node_t* parser_check_and_parse_structure_field_access(parser_t *parser, ast_node_t* object)
+{
+    if (parser_match(parser, TOKEN_TYPE_DOT))
+        return parser_parse_structure_field_access(parser, object);
+
+    return object;
+}
+
+ast_node_t* parser_check_and_parse_variable_assignment(parser_t *parser, ast_node_t* target)
+{
+    if (parser_match(parser, TOKEN_TYPE_EQUALS))
+        return parser_parse_variable_assignment(parser, target);
+
+    return target;
 }
 
 ast_node_t *parser_parse(parser_t *parser)
@@ -73,10 +89,10 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
     ast_node_t* variable_node = parser_parse_variable(parser, name);
 
     if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, variable_node);
-    if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, name);
-    if (parser_match(parser, TOKEN_TYPE_DOT))    return parser_parse_structure_field(parser, name);
+    if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, variable_node);
+    if (parser_match(parser, TOKEN_TYPE_DOT))    return parser_parse_structure_field_access(parser, variable_node);
 
-    return parser_parse_variable(parser, name);
+    return variable_node;
 }
 
 ast_node_t *parser_parse_keyword(parser_t *parser)
@@ -116,12 +132,12 @@ ast_node_t *parser_parse_variable_definition(parser_t *parser)
     return variable_definition_node_new(name, value);
 }
 
-ast_node_t *parser_parse_variable_assignment(parser_t *parser, string_view_t name)
+ast_node_t *parser_parse_variable_assignment(parser_t *parser, ast_node_t* target)
 {
     parser_eat(parser, TOKEN_TYPE_EQUALS);
     ast_node_t *value = parser_parse_statement(parser);
 
-    return variable_assignment_node_new(name, value);
+    return variable_assignment_node_new(target, value);
 }
 
 ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee)
@@ -142,7 +158,13 @@ ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee)
     }
     parser_eat(parser, TOKEN_TYPE_RPAREN);
 
-    return parser_check_and_parse_function_call(parser, function_call_node_new(callee, statement_sequence));
+    ast_node_t* node = function_call_node_new(callee, statement_sequence);
+
+    node = parser_check_and_parse_function_call(parser, node);
+    node = parser_check_and_parse_structure_field_access(parser, node);
+    node = parser_check_and_parse_variable_assignment(parser, node);
+
+    return node;
 }
 
 ast_node_t *parser_parse_function_definition(parser_t *parser)
@@ -166,8 +188,13 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
     parser_eat(parser, TOKEN_TYPE_RPAREN);
 
     ast_node_t *body = parser_parse_statement(parser);
+    ast_node_t *node = function_definition_node_new(parameter, body);
 
-    return parser_check_and_parse_function_call(parser, function_definition_node_new(parameter, body));
+    node = parser_check_and_parse_function_call(parser, node);
+    node = parser_check_and_parse_structure_field_access(parser, node);
+    node = parser_check_and_parse_variable_assignment(parser, node);
+
+    return node;
 }
 
 ast_node_t *parser_parse_structure_definition(parser_t *parser)
@@ -211,13 +238,19 @@ ast_node_t *parser_parse_structure_definition(parser_t *parser)
     return structure_definition_node_new(parameter, values);
 }
 
-ast_node_t *parser_parse_structure_field(parser_t *parser, const string_view_t name)
+ast_node_t *parser_parse_structure_field_access(parser_t *parser, ast_node_t* object)
 {
     parser_eat(parser, TOKEN_TYPE_DOT);
 
     const token_t field = parser_eat(parser, TOKEN_TYPE_IDENTIFIER);
 
-    return structure_field_node_new(name, field.value.as_string);
+    ast_node_t *node = structure_field_access_node_new(object, field.value.as_string);
+
+    node = parser_check_and_parse_function_call(parser, node);
+    node = parser_check_and_parse_structure_field_access(parser, node);
+    node = parser_check_and_parse_variable_assignment(parser, node);
+
+    return node;
 }
 
 ast_node_t *parser_parse_if(parser_t *parser)
@@ -341,6 +374,8 @@ ast_node_t *parser_parse_factor(parser_t *parser)
             parser_eat(parser, TOKEN_TYPE_RPAREN);
 
             node = parser_check_and_parse_function_call(parser, node);
+            node = parser_check_and_parse_structure_field_access(parser, node);
+            node = parser_check_and_parse_variable_assignment(parser, node);
 
             break;
         case TOKEN_TYPE_LBRACE:

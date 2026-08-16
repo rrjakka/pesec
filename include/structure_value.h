@@ -16,6 +16,8 @@ structure_value_t* structure_value_new();
 
 value_t structure_value_get(const structure_value_t* structure_value, string_view_t name);
 
+void structure_value_push(const structure_value_t* structure_value, string_view_t name, value_t value);
+
 void structure_value_set(const structure_value_t* structure_value, string_view_t name, value_t value);
 
 void structure_value_free(structure_value_t* structure_value);

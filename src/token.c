@@ -15,6 +15,7 @@ void token_print(FILE* stream, const token_t token)
         case TOKEN_TYPE_STRING:
             fprintf(stream, "string: %.*s", token.value.as_string.length, token.value.as_string.string); break;
         case TOKEN_TYPE_EQUALS:
+            fprintf(stream, "assign: %.*s", token.value.as_string.length, token.value.as_string.string); break;
         case TOKEN_TYPE_EQUALS_EQUALS:
         case TOKEN_TYPE_LESS:
         case TOKEN_TYPE_LESS_EQUALS:
@@ -37,6 +38,8 @@ void token_print(FILE* stream, const token_t token)
             fprintf(stream, "bracket: %.*s", token.value.as_string.length, token.value.as_string.string); break;
         case TOKEN_TYPE_COMMA:
             fprintf(stream, "comma: %.*s", token.value.as_string.length, token.value.as_string.string); break;
+        case TOKEN_TYPE_DOT:
+            fprintf(stream, "dot: %.*s", token.value.as_string.length, token.value.as_string.string); break;
         case TOKEN_TYPE_SEMICOLON:
             fprintf(stream, "semicolon: %.*s", token.value.as_string.length, token.value.as_string.string); break;
         case TOKEN_TYPE_EOF:

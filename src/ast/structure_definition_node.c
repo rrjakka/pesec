@@ -34,7 +34,7 @@ value_t structure_definition_node_evaluate(const structure_definition_node_t* st
 
     while (current_parameter && current_value)
     {
-        structure_value_set(structure_value, current_parameter->value, ast_node_evaluate(current_value->statement, context));
+        structure_value_push(structure_value, current_parameter->value, ast_node_evaluate(current_value->statement, context));
         current_parameter = current_parameter->next;
         current_value = current_value->next;
     }

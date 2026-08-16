@@ -18,6 +18,10 @@ token_t parser_eat(parser_t *parser, token_type_t type);
 
 ast_node_t *parser_check_and_parse_function_call(parser_t *parser, ast_node_t* callee);
 
+ast_node_t* parser_check_and_parse_structure_field_access(parser_t *parser, ast_node_t* object);
+
+ast_node_t* parser_check_and_parse_variable_assignment(parser_t *parser, ast_node_t* target);
+
 ast_node_t *parser_parse(parser_t *parser);
 
 ast_node_t *parser_parse_statement_sequence(parser_t *parser, bool between_braces);
@@ -30,7 +34,7 @@ ast_node_t *parser_parse_variable(parser_t *parser, string_view_t name);
 
 ast_node_t *parser_parse_variable_definition(parser_t *parser);
 
-ast_node_t *parser_parse_variable_assignment(parser_t *parser, string_view_t name);
+ast_node_t *parser_parse_variable_assignment(parser_t *parser, ast_node_t* target);
 
 ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee);
 
@@ -38,7 +42,7 @@ ast_node_t *parser_parse_function_definition(parser_t *parser);
 
 ast_node_t *parser_parse_structure_definition(parser_t *parser);
 
-ast_node_t *parser_parse_structure_field(parser_t *parser, string_view_t name);
+ast_node_t *parser_parse_structure_field_access(parser_t *parser, ast_node_t* object);
 
 ast_node_t *parser_parse_if(parser_t *parser);
 

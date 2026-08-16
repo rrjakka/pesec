@@ -25,7 +25,7 @@ add_executable(
         src/ast/function_call_node.c                include/ast/function_call_node.h
         src/ast/function_definition_node.c          include/ast/function_definition_node.h
         src/ast/structure_definition_node.c         include/ast/structure_definition_node.h
-        src/ast/structure_field_node.c              include/ast/structure_field_node.h
+        src/ast/structure_field_access_node.c include/ast/structure_field_access_node.h
         src/ast/statement_sequence_node.c           include/ast/statement_sequence_node.h
         src/ast/variable_definition_node.c          include/ast/variable_definition_node.h
         src/ast/variable_assignment_node.c          include/ast/variable_assignment_node.h

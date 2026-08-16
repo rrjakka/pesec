@@ -15,6 +15,7 @@ lexer_t* lexer_new(char* source, const unsigned long long length)
     lexer->source = source;
     lexer->i = 0;
     lexer->length = length;
+    lexer->commenting = false;
 
     return lexer;
 }
@@ -39,6 +40,36 @@ char lexer_get_current_char(const lexer_t* lexer)
     return lexer->source[lexer->i];
 }
 
+void lexer_skip_every_unnecessary_shit(lexer_t* lexer)
+{
+    while (lexer_can_advance(lexer))
+    {
+        const char current = lexer_get_current_char(lexer);
+        if (lexer->commenting)
+        {
+            if (current == '\n') lexer->commenting = false;
+
+            lexer->i++;
+            continue;
+        }
+
+        if (isspace(current))
+        {
+            lexer->i++;
+            continue;
+        }
+
+        if (current == '#')
+        {
+            lexer->i++;
+            lexer->commenting = true;
+            continue;
+        }
+
+        break;
+    }
+}
+
 token_t lexer_next_token(lexer_t* lexer)
 {
     if (!lexer_can_advance(lexer)) return (token_t){
@@ -46,16 +77,18 @@ token_t lexer_next_token(lexer_t* lexer)
         .type = TOKEN_TYPE_EOF,
     };
 
-    while (lexer_can_advance(lexer) && isspace(lexer_get_current_char(lexer))) lexer->i++;
+    lexer_skip_every_unnecessary_shit(lexer);
 
     if (!lexer_can_advance(lexer)) return (token_t){
         .value = nullptr,
         .type = TOKEN_TYPE_EOF
     };
 
-    if (isdigit(lexer_get_current_char(lexer))) return lexer_next_number(lexer);
-    if (isalpha(lexer_get_current_char(lexer)) || lexer_get_current_char(lexer) == '_') return lexer_next_identifier(lexer);
-    if (lexer_get_current_char(lexer) == '"') return lexer_next_string(lexer);
+    char current = lexer_get_current_char(lexer);
+
+    if (isdigit(current)) return lexer_next_number(lexer);
+    if (isalpha(current) || current == '_') return lexer_next_identifier(lexer);
+    if (current == '"') return lexer_next_string(lexer);
     return lexer_next_operator(lexer);
 }
 
@@ -98,7 +131,6 @@ token_t lexer_next_identifier(lexer_t* lexer)
 
     while (lexer_can_advance(lexer) && (
             isalnum(lexer_get_current_char(lexer)) ||
-            lexer_get_current_char(lexer) == '#' ||
             lexer_get_current_char(lexer) == '_'
             )) lexer_advance(lexer);
 

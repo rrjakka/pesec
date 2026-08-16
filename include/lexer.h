@@ -5,6 +5,7 @@
 
 typedef struct
 {
+    bool commenting;
     char* source;
     unsigned long long i;
     unsigned long long length;
@@ -17,6 +18,8 @@ void lexer_advance(lexer_t* lexer);
 bool lexer_can_advance(const lexer_t* lexer);
 
 char lexer_get_current_char(const lexer_t* lexer);
+
+void lexer_skip_every_unnecessary_shit(lexer_t* lexer);
 
 token_t lexer_next_token(lexer_t* lexer);
 

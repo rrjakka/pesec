@@ -9,6 +9,8 @@ mutab point_new = fn(x, y) {
     };
 };
 
+# damn
+
 mutab p1 = point_new(10, 30);
 mutab p2 = point_new(20, 40);
 

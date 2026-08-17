@@ -47,7 +47,7 @@ void lexer_skip_every_unnecessary_shit(lexer_t* lexer)
         const char current = lexer_get_current_char(lexer);
         if (lexer->commenting)
         {
-            if (current == '\n') lexer->commenting = false;
+            if (current == '#') lexer->commenting = false;
 
             lexer->i++;
             continue;

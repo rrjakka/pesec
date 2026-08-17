@@ -1,0 +1,16 @@
+# mutable variables #
+mutab a = 1;
+println(a);
+
+a = a + 1;
+println(a);
+
+a = "Hello, Pesec!";
+println(a);
+
+# constants #
+const b = 1;
+println(b);
+
+# b = b + 1; - not allowed #
+# b = "Hello, Pesec!"; - not allowed #

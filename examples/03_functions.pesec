@@ -1,0 +1,22 @@
+# function definition #
+mutab f = fn() {
+    println("one");
+};
+
+f();
+
+# instant call #
+mutab a = fn() { "two"; } ();
+
+println(a);
+
+fn() {
+    println("three");
+} ();
+
+# functions can look like this #
+f = fn(x) x * x;
+
+println(f(0));
+println(f(1));
+println(f(2));

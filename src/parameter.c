@@ -1,5 +1,6 @@
 #include "include/parameter.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 
@@ -9,6 +10,14 @@ parameter_t* parameter_new()
     parameter->count = 0;
     parameter->parameters = nullptr;
     return parameter;
+}
+
+void parameter_push_from_cstr(parameter_t* parameter, const char** values)
+{
+    for (const char **p = values; *p; ++p)
+    {
+        parameter_push(parameter, string_view_from(*p));
+    }
 }
 
 void parameter_push(parameter_t* parameter, const string_view_t value)

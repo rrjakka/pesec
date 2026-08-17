@@ -7,27 +7,34 @@
 #include "include/function_value.h"
 #include "include/utils/throw.h"
 
-value_t println(context_t* context)
+
+
+
+#define LAMBDA(return_type, function_body) ({ return_type __lambda_function__ function_body __lambda_function__; })
+
+
+static value_t println(context_t* context)
 {
     const context_item_t* value = context_get(context, string_view_from("value"));
-
     value_print(value->value);
     printf("\n");
-
     return MAKE_VAL_NUM(0);
 }
 
-void init_io(const context_t* context)
+
+static void init_io(const context_t* context)
 {
     parameter_t* parameter = parameter_new();
-    parameter_push(parameter, string_view_from("value"));
+
+    parameter_push_from_cstr(parameter, (const char*[]){ "value", nullptr });
+
     context_push(
         context,
         string_view_from("println"),
         MAKE_VAL_FUNC(
             function_value_new(
                 parameter,
-                (function_value_value_t){
+                (function_value_value_t) {
                     .as_c_function = println
                 },
                 FUNCTION_VALUE_TYPE_C_FUNCTION
@@ -83,8 +90,6 @@ int main(const int argc, char** argv)
     default:
         break;
     }
-
-    // finnish:
 
     context_free(context);
     ast_node_free(ast);

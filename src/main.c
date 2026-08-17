@@ -4,8 +4,38 @@
 #include "include/lexer.h"
 #include "include/parser.h"
 #include "include/context.h"
+#include "include/function_value.h"
 #include "include/utils/throw.h"
 
+value_t println(context_t* context)
+{
+    const context_item_t* value = context_get(context, string_view_from("value"));
+
+    value_print(value->value);
+    printf("\n");
+
+    return MAKE_VAL_NUM(0);
+}
+
+void init_io(const context_t* context)
+{
+    parameter_t* parameter = parameter_new();
+    parameter_push(parameter, string_view_from("value"));
+    context_push(
+        context,
+        string_view_from("println"),
+        MAKE_VAL_FUNC(
+            function_value_new(
+                parameter,
+                (function_value_value_t){
+                    .as_c_function = println
+                },
+                FUNCTION_VALUE_TYPE_C_FUNCTION
+            )
+        ),
+        false
+        );
+}
 
 int main(const int argc, char** argv)
 {
@@ -38,6 +68,8 @@ int main(const int argc, char** argv)
     ast_node_t* ast = parser_parse(parser);
     context_t* context = context_new(nullptr);
 
+    init_io(context);
+
     const value_t result = ast_node_evaluate(ast, context);
 
     switch (result.control_flow)
@@ -51,6 +83,8 @@ int main(const int argc, char** argv)
     default:
         break;
     }
+
+    // finnish:
 
     context_free(context);
     ast_node_free(ast);

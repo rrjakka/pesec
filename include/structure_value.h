@@ -2,7 +2,6 @@
 #define PESEC_STRUCTURE_VALUE_H
 
 #include "context.h"
-#include "parameter.h"
 
 typedef struct AST_NODE_STRUCT ast_node_t;
 typedef struct STATEMENT_SEQUENCE_NODE_STRUCT statement_sequence_node_t;

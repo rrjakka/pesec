@@ -59,17 +59,6 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
             evaluated_values[i] = MAKE_VAL_NUM(0);
     }
 
-    if (function_call_node->callee->type == AST_NODE_VARIABLE &&
-        string_view_equals_cstr(function_call_node->callee->node.variable->name, "println"))
-    {
-        for (unsigned long long j = 0; j < statements_count; j++)
-            value_print(evaluated_values[j]);
-
-        printf("\n");
-        free(evaluated_values);
-        return MAKE_VAL_NUM(0);
-    }
-
     const value_t callee_value = ast_node_evaluate(function_call_node->callee, context);
 
     if (callee_value.type != VALUE_TYPE_FUNCTION)

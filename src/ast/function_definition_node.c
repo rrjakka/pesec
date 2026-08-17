@@ -25,7 +25,13 @@ void function_definition_node_free(function_definition_node_t* function_definiti
 value_t function_definition_node_evaluate(const function_definition_node_t* function_definition_node, context_t* context)
 {
     const auto value = MAKE_VAL_FUNC(
-        function_value_new(function_definition_node->parameter, function_definition_node->body)
+        function_value_new(
+            function_definition_node->parameter,
+            (function_value_value_t){
+                .as_node=function_definition_node->body
+            },
+            FUNCTION_VALUE_TYPE_NODE
+        )
     );
     return value;
 }

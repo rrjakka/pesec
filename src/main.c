@@ -8,11 +8,6 @@
 #include "include/utils/throw.h"
 
 
-
-
-#define LAMBDA(return_type, function_body) ({ return_type __lambda_function__ function_body __lambda_function__; })
-
-
 static value_t println(context_t* context)
 {
     const context_item_t* value = context_get(context, string_view_from("value"));

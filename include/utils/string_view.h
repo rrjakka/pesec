@@ -3,8 +3,8 @@
 
 typedef struct
 {
-    const char* string;
-    unsigned int length;
+    const char* data;
+    unsigned long long length;
 } string_view_t;
 
 string_view_t string_view_from(const char* string);

@@ -24,7 +24,7 @@ void value_print(const value_t value)
     switch (value.type)
     {
         case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
-        case VALUE_TYPE_STRING: printf("%.*s", value.value.as_string.length, value.value.as_string.string); return;
+        case VALUE_TYPE_STRING: printf("%.*s", value.value.as_string.length, value.value.as_string.data); return;
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
         case VALUE_TYPE_FUNCTION: printf("<function>"); return;
         case VALUE_TYPE_STRUCTURE: printf("<structure>"); return;

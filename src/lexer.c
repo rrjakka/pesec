@@ -135,7 +135,7 @@ token_t lexer_next_identifier(lexer_t* lexer)
             )) lexer_advance(lexer);
 
     const auto value = (string_view_t) {
-        .string = lexer->source + begin,
+        .data = lexer->source + begin,
         .length = lexer->i - begin,
     };
     token_type_t type = TOKEN_TYPE_IDENTIFIER;
@@ -171,7 +171,7 @@ token_t lexer_next_string(lexer_t* lexer)
 
     return (token_t){
         .value.as_string = {
-            .string = lexer->source + begin,
+            .data = lexer->source + begin,
             .length = length,
         },
         .type = TOKEN_TYPE_STRING,

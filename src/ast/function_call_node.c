@@ -66,7 +66,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
         THROW(
             "variable %.*s not a function\n",
             callee_value.value.as_string.length,
-            callee_value.value.as_string.string
+            callee_value.value.as_string.data
             );
     }
 
@@ -77,7 +77,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
         THROW(
             "function %.*s takes %llu but %llu given\n",
             callee_value.value.as_string.length,
-            callee_value.value.as_string.string,
+            callee_value.value.as_string.data,
             function->parameter->count, statements_count
             );
     }

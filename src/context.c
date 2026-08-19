@@ -22,7 +22,7 @@ unsigned long long context_hash(const context_t* context, const string_view_t ke
     unsigned long long sum = 0;
     for (unsigned long long i = 0; i < key.length; i++)
     {
-        sum += (key.string[i] * (i + 256)) ^ 'f' ^ 'u' ^ 'c' ^ 'k';
+        sum += (key.data[i] * (i + 256)) ^ 'f' ^ 'u' ^ 'c' ^ 'k';
     }
     return sum % context->capacity;
 }
@@ -54,7 +54,7 @@ void context_set(const context_t* context, const string_view_t key, const value_
 {
     context_item_t* node = context_get(context, key);
     if (node->constant)
-        THROW("Variable %.*s is constant\n", key.length, key.string);
+        THROW("Variable %.*s is constant\n", key.length, key.data);
     node->value = value;
 }
 
@@ -77,7 +77,7 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
         return context_get(context->parent, key);
     }
 
-    THROW("Variable %.*s doesn't exist\n", key.length, key.string);
+    THROW("Variable %.*s doesn't exist\n", key.length, key.data);
 }
 
 void context_free(context_t* context)

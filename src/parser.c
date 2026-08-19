@@ -84,7 +84,7 @@ ast_node_t *parser_parse_statement_sequence(parser_t *parser, const bool between
 
 ast_node_t *parser_parse_identifier(parser_t *parser)
 {
-    const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
+    const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view;
 
     ast_node_t* variable_node = parser_parse_variable(parser, name);
 
@@ -97,7 +97,7 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 
 ast_node_t *parser_parse_keyword(parser_t *parser)
 {
-    const string_view_t name = parser_eat(parser, TOKEN_TYPE_KEYWORD).value.as_string;
+    const string_view_t name = parser_eat(parser, TOKEN_TYPE_KEYWORD).value.as_string_view;
 
     if (string_view_equals_cstr(name, "true")) return literal_node_new(MAKE_VAL_BOOL(true));
     if (string_view_equals_cstr(name, "false")) return literal_node_new(MAKE_VAL_BOOL(false));
@@ -120,7 +120,7 @@ ast_node_t *parser_parse_variable(parser_t *parser, const string_view_t name)
 
 ast_node_t *parser_parse_variable_definition(parser_t *parser, const bool constant)
 {
-    const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string;
+    const string_view_t name = parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view;
 
     ast_node_t *value = literal_node_new(MAKE_VAL_NUM(0));
 
@@ -177,12 +177,12 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
 
     if (!parser_match(parser, TOKEN_TYPE_RPAREN))
     {
-        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view);
 
         while (parser_match(parser, TOKEN_TYPE_COMMA))
         {
             parser_eat(parser, TOKEN_TYPE_COMMA);
-            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view);
         }
     }
 
@@ -207,7 +207,7 @@ ast_node_t *parser_parse_structure_definition(parser_t *parser)
 
     if (!parser_match(parser, TOKEN_TYPE_RBRACE))
     {
-        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+        parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view);
         if (parser_match(parser, TOKEN_TYPE_EQUALS))
         {
             parser_eat(parser, TOKEN_TYPE_EQUALS);
@@ -221,7 +221,7 @@ ast_node_t *parser_parse_structure_definition(parser_t *parser)
         while (parser_match(parser, TOKEN_TYPE_COMMA))
         {
             parser_eat(parser, TOKEN_TYPE_COMMA);
-            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string);
+            parameter_push(parameter, parser_eat(parser, TOKEN_TYPE_IDENTIFIER).value.as_string_view);
             if (parser_match(parser, TOKEN_TYPE_EQUALS))
             {
                 parser_eat(parser, TOKEN_TYPE_EQUALS);
@@ -245,7 +245,7 @@ ast_node_t *parser_parse_structure_field_access(parser_t *parser, ast_node_t* ob
 
     const token_t field = parser_eat(parser, TOKEN_TYPE_IDENTIFIER);
 
-    ast_node_t *node = structure_field_access_node_new(object, field.value.as_string);
+    ast_node_t *node = structure_field_access_node_new(object, field.value.as_string_view);
 
     node = parser_check_and_parse_function_call(parser, node);
     node = parser_check_and_parse_structure_field_access(parser, node);
@@ -262,7 +262,7 @@ ast_node_t *parser_parse_if(parser_t *parser)
     ast_node_t *else_body = nullptr;
 
     if (parser_match(parser, TOKEN_TYPE_KEYWORD) &&
-        string_view_equals_cstr(parser->current_token.value.as_string, "else"))
+        string_view_equals_cstr(parser->current_token.value.as_string_view, "else"))
     {
         parser_eat(parser, TOKEN_TYPE_KEYWORD);
         else_body = parser_parse_statement(parser);

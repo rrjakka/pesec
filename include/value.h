@@ -13,7 +13,7 @@
 #define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x, .control_flow = cf })
 #define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x, .control_flow = cf })
 
-#include "utils/string_view.h"
+#include "utils/string.h"
 #include "control_flow.h"
 
 typedef struct FUNCTION_VALUE_STRUCT function_value_t;
@@ -30,7 +30,7 @@ typedef enum
 
 typedef union
 {
-    string_view_t as_string;
+    string_t as_string;
     long double as_number;
     bool as_bool;
     function_value_t* as_function;

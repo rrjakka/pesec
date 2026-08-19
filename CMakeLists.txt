@@ -17,6 +17,8 @@ add_executable(
         src/parameter.c                             include/parameter.h
 
         src/utils/string_view.c                     include/utils/string_view.h
+        src/utils/string.c                          include/utils/string.h
+        src/utils/throw.c                           include/utils/throw.h
 
         src/ast/ast_node.c                          include/ast/ast_node.h
         src/ast/binary_op_node.c                    include/ast/binary_op_node.h

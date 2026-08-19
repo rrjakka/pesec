@@ -10,7 +10,7 @@ bool value_get_boolean(const value_t value)
     switch (value.type)
     {
         case VALUE_TYPE_NUMBER: return value.value.as_number != 0;
-        case VALUE_TYPE_STRING: return value.value.as_string.length != 0;
+        case VALUE_TYPE_STRING: return value.value.as_string.size != 0;
         case VALUE_TYPE_BOOLEAN: return value.value.as_bool;
         case VALUE_TYPE_FUNCTION:
         case VALUE_TYPE_STRUCTURE: return true;
@@ -24,7 +24,7 @@ void value_print(const value_t value)
     switch (value.type)
     {
         case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
-        case VALUE_TYPE_STRING: printf("%.*s", value.value.as_string.length, value.value.as_string.data); return;
+        case VALUE_TYPE_STRING: printf("%s", value.value.as_string.data); return;
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
         case VALUE_TYPE_FUNCTION: printf("<function>"); return;
         case VALUE_TYPE_STRUCTURE: printf("<structure>"); return;
@@ -72,7 +72,7 @@ value_t value_operation_equals(const value_t left, const value_t right)
         return MAKE_VAL_BOOL(left.value.as_number == right.value.as_number);
 
     if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
-        return MAKE_VAL_BOOL(string_view_equals(left.value.as_string, right.value.as_string));
+        return MAKE_VAL_BOOL(string_equals(left.value.as_string, right.value.as_string));
 
     return MAKE_VAL_BOOL(false);
 }

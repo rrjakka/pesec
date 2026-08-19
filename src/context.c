@@ -54,7 +54,7 @@ void context_set(const context_t* context, const string_view_t key, const value_
 {
     context_item_t* node = context_get(context, key);
     if (node->constant)
-        THROW("Variable %.*s is constant\n", key.length, key.data);
+        THROW("Variable %.*s is constant\n", (unsigned int)key.length, key.data);
     node->value = value;
 }
 
@@ -77,7 +77,7 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
         return context_get(context->parent, key);
     }
 
-    THROW("Variable %.*s doesn't exist\n", key.length, key.data);
+    THROW("Variable %.*s doesn't exist\n", (unsigned int)key.length, key.data);
 }
 
 void context_free(context_t* context)

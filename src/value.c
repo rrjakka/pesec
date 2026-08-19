@@ -40,8 +40,8 @@ void value_print(const value_t value)
         case VALUE_TYPE_STRING: printf("%s", value.value.as_string.data); return;
         case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
-        case VALUE_TYPE_FUNCTION: printf("<function>"); return;
-        case VALUE_TYPE_STRUCTURE: printf("<structure>"); return;
+        case VALUE_TYPE_FUNCTION: printf("<function:%p>", &value.value.as_function); return;
+        case VALUE_TYPE_STRUCTURE: printf("<structure:%p>", &value.value.as_structure); return;
     }
 
     THROW("Value type '%d' is not a valid value type\n", value.type);

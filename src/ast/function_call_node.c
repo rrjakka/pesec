@@ -64,8 +64,8 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
     if (callee_value.type != VALUE_TYPE_FUNCTION)
     {
         THROW(
-            "variable %s not a function\n",
-            callee_value.value.as_string.data
+            "Value typed %s is not callable\n",
+            value_get_type(callee_value)
             );
     }
 
@@ -74,8 +74,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
     if (function->parameter->count != statements_count)
     {
         THROW(
-            "function %s takes %llu but %llu given\n",
-            callee_value.value.as_string.data,
+            "Function takes %llu but %llu given\n",
             function->parameter->count, statements_count
             );
     }

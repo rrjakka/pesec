@@ -7,7 +7,6 @@
 #define MAKE_VAL_FUNC(x) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x })
 #define MAKE_VAL_STRUCT(x) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x })
 
-#define MAKE_VAL_STR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRING, .value.as_string = x, .control_flow = cf })
 #define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x, .control_flow = cf })
 #define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x, .control_flow = cf })
 #define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x, .control_flow = cf })
@@ -45,6 +44,8 @@ typedef struct
 } value_t;
 
 bool value_get_boolean(value_t value);
+
+char* value_get_type(value_t value);
 
 void value_print(value_t value);
 

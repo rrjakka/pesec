@@ -19,12 +19,26 @@ bool value_get_boolean(const value_t value)
     THROW("Value type '%d' is not a valid value type\n", value.type);
 }
 
+char* value_get_type(value_t value)
+{
+    switch (value.type)
+    {
+        case VALUE_TYPE_NUMBER: return "number";
+        case VALUE_TYPE_STRING: return "string";
+        case VALUE_TYPE_BOOLEAN: return "boolean";
+        case VALUE_TYPE_FUNCTION: return "function";
+        case VALUE_TYPE_STRUCTURE: return "structure";
+    }
+
+    THROW("Value type '%d' is not a valid value type\n", value.type);
+}
+
 void value_print(const value_t value)
 {
     switch (value.type)
     {
-        case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
         case VALUE_TYPE_STRING: printf("%s", value.value.as_string.data); return;
+        case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
         case VALUE_TYPE_FUNCTION: printf("<function>"); return;
         case VALUE_TYPE_STRUCTURE: printf("<structure>"); return;

@@ -25,10 +25,7 @@ value_t while_loop_node_evaluate(const while_loop_node_t* while_loop_node, conte
 {
     context_t* local_context = context_new(context);
 
-    value_t result = {
-        .type = VALUE_TYPE_NUMBER,
-        .value.as_number = 0
-    };
+    value_t result = MAKE_VAL_NUM(0);
 
     while (value_get_boolean(ast_node_evaluate(while_loop_node->condition, local_context)))
     {

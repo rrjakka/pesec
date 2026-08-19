@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "include/utils/throw.h"
+
 
 string_t string_new()
 {
@@ -21,7 +23,10 @@ void string_push_back(string_t* string, const char data)
     if (string->size + 1 >= string->capacity)
     {
         string->capacity = string->capacity * 2;
-        string->data = (char*)realloc(string->data, string->capacity);
+        const auto temp = (char*)realloc(string->data, string->capacity);
+        if (!temp)
+            THROW("Failed to realloc memory to string");
+        string->data = temp;
     }
 
     string->data[string->size] = data;

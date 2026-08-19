@@ -1,3 +1,6 @@
+mutab d = fn(a) 0;
+d(1, 2);
+
 # function definition #
 mutab f = fn() {
     println("one");

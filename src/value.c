@@ -73,10 +73,12 @@ value_t value_operation_mul(const value_t left, const value_t right)
 
 value_t value_operation_div(const value_t left, const value_t right)
 {
-    // please never use right equal 0
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
+    {
+        if (right.value.as_number == 0)
+            THROW("Division by zero is not allowed\n");
         return MAKE_VAL_NUM(left.value.as_number / right.value.as_number);
-
+    }
     THROW("Non number type can't use operator '/'\n");
 }
 
@@ -109,7 +111,6 @@ value_t value_operation_less(const value_t left, const value_t right)
 
 value_t value_operation_greater_or_equals(const value_t left, const value_t right)
 {
-
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
         return MAKE_VAL_BOOL(left.value.as_number >= right.value.as_number);
 
@@ -118,7 +119,6 @@ value_t value_operation_greater_or_equals(const value_t left, const value_t righ
 
 value_t value_operation_greater(const value_t left, const value_t right)
 {
-
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
         return MAKE_VAL_BOOL(left.value.as_number > right.value.as_number);
 

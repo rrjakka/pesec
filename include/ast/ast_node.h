@@ -10,6 +10,8 @@
 #include "function_definition_node.h"
 #include "structure_definition_node.h"
 #include "structure_field_access_node.h"
+#include "array_definition_node.h"
+#include "array_access_node.h"
 #include "statement_sequence_node.h"
 #include "condition_node.h"
 #include "while_loop_node.h"
@@ -28,6 +30,8 @@ typedef enum
     AST_NODE_FUNCTION_DEFINITION,
     AST_NODE_STRUCTURE_DEFINITION,
     AST_NODE_STRUCTURE_FIELD_ACCESS,
+    AST_NODE_ARRAY_DEFINITION,
+    AST_NODE_ARRAY_ACCESS,
     AST_NODE_STATEMENT_SEQUENCE,
     AST_NODE_CONDITION,
     AST_NODE_WHILE_LOOP,
@@ -48,6 +52,8 @@ typedef struct AST_NODE_STRUCT
         function_definition_node_t* function_definition;
         structure_definition_node_t* structure_definition;
         structure_field_access_node_t* structure_field_access;
+        array_definition_node_t* array_definition;
+        array_access_node_t* array_access;
         statement_sequence_node_t* statement_sequence;
         condition_node_t* condition;
         while_loop_node_t* while_loop;

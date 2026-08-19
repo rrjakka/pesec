@@ -61,6 +61,24 @@ ast_node_t* parser_check_and_parse_variable_assignment(parser_t *parser, ast_nod
     return target;
 }
 
+ast_node_t* parser_check_and_parse_array_access(parser_t *parser, ast_node_t* array)
+{
+    if (parser_match(parser, TOKEN_TYPE_LBRACKET))
+        return parser_parse_array_access(parser, array);
+
+    return array;
+}
+
+ast_node_t* parser_check_and_do_everything(parser_t *parser, ast_node_t* node)
+{
+    node = parser_check_and_parse_function_call(parser, node);
+    node = parser_check_and_parse_structure_field_access(parser, node);
+    node = parser_check_and_parse_variable_assignment(parser, node);
+    node = parser_check_and_parse_array_access(parser, node);
+
+    return node;
+}
+
 ast_node_t *parser_parse(parser_t *parser)
 {
     return parser_parse_statement_sequence(parser, false);
@@ -88,9 +106,10 @@ ast_node_t *parser_parse_identifier(parser_t *parser)
 
     ast_node_t* variable_node = parser_parse_variable(parser, name);
 
-    if (parser_match(parser, TOKEN_TYPE_LPAREN)) return parser_parse_function_call(parser, variable_node);
-    if (parser_match(parser, TOKEN_TYPE_EQUALS)) return parser_parse_variable_assignment(parser, variable_node);
-    if (parser_match(parser, TOKEN_TYPE_DOT))    return parser_parse_structure_field_access(parser, variable_node);
+    if (parser_match(parser, TOKEN_TYPE_LPAREN))    return parser_parse_function_call(parser, variable_node);
+    if (parser_match(parser, TOKEN_TYPE_EQUALS))    return parser_parse_variable_assignment(parser, variable_node);
+    if (parser_match(parser, TOKEN_TYPE_DOT))       return parser_parse_structure_field_access(parser, variable_node);
+    if (parser_match(parser, TOKEN_TYPE_LBRACKET))  return parser_parse_array_access(parser, variable_node);
 
     return variable_node;
 }
@@ -161,9 +180,7 @@ ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee)
 
     ast_node_t* node = function_call_node_new(callee, statement_sequence);
 
-    node = parser_check_and_parse_function_call(parser, node);
-    node = parser_check_and_parse_structure_field_access(parser, node);
-    node = parser_check_and_parse_variable_assignment(parser, node);
+    node = parser_check_and_do_everything(parser, node);
 
     return node;
 }
@@ -173,7 +190,6 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
     parameter_t* parameter = parameter_new();
 
     parser_eat(parser, TOKEN_TYPE_LPAREN);
-
 
     if (!parser_match(parser, TOKEN_TYPE_RPAREN))
     {
@@ -191,9 +207,7 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
     ast_node_t *body = parser_parse_statement(parser);
     ast_node_t *node = function_definition_node_new(parameter, body);
 
-    node = parser_check_and_parse_function_call(parser, node);
-    node = parser_check_and_parse_structure_field_access(parser, node);
-    node = parser_check_and_parse_variable_assignment(parser, node);
+    node = parser_check_and_do_everything(parser, node);
 
     return node;
 }
@@ -247,9 +261,43 @@ ast_node_t *parser_parse_structure_field_access(parser_t *parser, ast_node_t* ob
 
     ast_node_t *node = structure_field_access_node_new(object, field.value.as_string_view);
 
-    node = parser_check_and_parse_function_call(parser, node);
-    node = parser_check_and_parse_structure_field_access(parser, node);
-    node = parser_check_and_parse_variable_assignment(parser, node);
+    node = parser_check_and_do_everything(parser, node);
+
+    return node;
+}
+
+ast_node_t *parser_parse_array_definition(parser_t *parser)
+{
+    parser_eat(parser, TOKEN_TYPE_LBRACKET);
+
+    ast_node_t *statement_sequence = statement_sequence_node_new();
+
+    if (!parser_match(parser, TOKEN_TYPE_RBRACKET))
+    {
+        statement_sequence_node_push(statement_sequence->node.statement_sequence, parser_parse_statement(parser));
+
+        while (parser_match(parser, TOKEN_TYPE_COMMA))
+        {
+            parser_eat(parser, TOKEN_TYPE_COMMA);
+            statement_sequence_node_push(statement_sequence->node.statement_sequence, parser_parse_statement(parser));
+        }
+    }
+    parser_eat(parser, TOKEN_TYPE_RBRACKET);
+
+    ast_node_t *node = array_definition_node_new(statement_sequence);
+
+    return node;
+}
+
+ast_node_t *parser_parse_array_access(parser_t *parser, ast_node_t* array)
+{
+    parser_eat(parser, TOKEN_TYPE_LBRACKET);
+    ast_node_t* index = parser_parse_statement(parser);
+    parser_eat(parser, TOKEN_TYPE_RBRACKET);
+
+    ast_node_t *node = array_access_node_new(array, index);
+
+    node = parser_check_and_do_everything(parser, node);
 
     return node;
 }
@@ -369,14 +417,15 @@ ast_node_t *parser_parse_factor(parser_t *parser)
         case TOKEN_TYPE_KEYWORD:
             node = parser_parse_keyword(parser);
             break;
+        case TOKEN_TYPE_LBRACKET:
+            node = parser_parse_array_definition(parser);
+            break;
         case TOKEN_TYPE_LPAREN:
             parser_eat(parser, TOKEN_TYPE_LPAREN);
             node = parser_parse_statement(parser);
             parser_eat(parser, TOKEN_TYPE_RPAREN);
 
-            node = parser_check_and_parse_function_call(parser, node);
-            node = parser_check_and_parse_structure_field_access(parser, node);
-            node = parser_check_and_parse_variable_assignment(parser, node);
+            node = parser_check_and_do_everything(parser, node);
 
             break;
         case TOKEN_TYPE_LBRACE:

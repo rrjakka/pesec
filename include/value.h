@@ -6,17 +6,20 @@
 #define MAKE_VAL_BOOL(x) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x })
 #define MAKE_VAL_FUNC(x) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x })
 #define MAKE_VAL_STRUCT(x) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x })
+#define MAKE_VAL_ARR(x) ((value_t) { .type = VALUE_TYPE_ARRAY, .value.as_array = x })
 
 #define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .value.as_number = x, .control_flow = cf })
 #define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .value.as_bool = x, .control_flow = cf })
 #define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .value.as_function = x, .control_flow = cf })
 #define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .value.as_structure = x, .control_flow = cf })
+#define MAKE_VAL_ARR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_ARRAY, .value.as_array = x, .control_flow = cf })
 
 #include "utils/string.h"
 #include "control_flow.h"
 
 typedef struct FUNCTION_VALUE_STRUCT function_value_t;
 typedef struct STRUCTURE_VALUE_STRUCT structure_value_t;
+typedef struct ARRAY_VALUE_STRUCT array_value_t;
 
 typedef enum
 {
@@ -25,6 +28,7 @@ typedef enum
     VALUE_TYPE_BOOLEAN,
     VALUE_TYPE_FUNCTION,
     VALUE_TYPE_STRUCTURE,
+    VALUE_TYPE_ARRAY,
 } value_type_t;
 
 typedef union
@@ -34,6 +38,7 @@ typedef union
     bool as_bool;
     function_value_t* as_function;
     structure_value_t* as_structure;
+    array_value_t* as_array;
 } value_value_t;
 
 typedef struct

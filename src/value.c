@@ -13,6 +13,7 @@ bool value_get_boolean(const value_t value)
         case VALUE_TYPE_STRING: return value.value.as_string.size != 0;
         case VALUE_TYPE_BOOLEAN: return value.value.as_bool;
         case VALUE_TYPE_FUNCTION:
+        case VALUE_TYPE_ARRAY:
         case VALUE_TYPE_STRUCTURE: return true;
     }
 
@@ -28,6 +29,7 @@ char* value_get_type(value_t value)
         case VALUE_TYPE_BOOLEAN: return "boolean";
         case VALUE_TYPE_FUNCTION: return "function";
         case VALUE_TYPE_STRUCTURE: return "structure";
+        case VALUE_TYPE_ARRAY: return "array";
     }
 
     THROW("Value type '%d' is not a valid value type\n", value.type);
@@ -42,6 +44,7 @@ void value_print(const value_t value)
         case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
         case VALUE_TYPE_FUNCTION: printf("<function:%p>", &value.value.as_function); return;
         case VALUE_TYPE_STRUCTURE: printf("<structure:%p>", &value.value.as_structure); return;
+        case VALUE_TYPE_ARRAY: printf("<array:%p>", &value.value.as_array); return;
     }
 
     THROW("Value type '%d' is not a valid value type\n", value.type);

@@ -24,7 +24,7 @@ void structure_field_access_node_free(structure_field_access_node_t* structure_f
 
 value_t structure_field_access_node_evaluate(const structure_field_access_node_t* structure_field_node, context_t* context)
 {
-    value_t item = ast_node_evaluate(structure_field_node->object, context);
+    const value_t item = ast_node_evaluate(structure_field_node->object, context);
 
     if (item.type != VALUE_TYPE_STRUCTURE)
     {

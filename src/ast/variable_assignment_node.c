@@ -3,6 +3,7 @@
 #include "include/ast/ast_node.h"
 #include <stdlib.h>
 
+#include "include/array_value.h"
 #include "include/structure_value.h"
 #include "include/utils/throw.h"
 
@@ -45,6 +46,30 @@ value_t variable_assignment_node_evaluate(const variable_assignment_node_t* vari
             structure_value_set(
                 object_value.value.as_structure,
                 variable_assignment_node->target->node.structure_field_access->field,
+                value
+            );
+
+            break;
+        case AST_NODE_ARRAY_ACCESS:
+            const value_t array_value = ast_node_evaluate(
+                variable_assignment_node->target->node.array_access->array,
+                context
+            );
+
+            if (array_value.type != VALUE_TYPE_ARRAY)
+                THROW("Cannot assign a index to a non array\n");
+
+            const value_t index_value = ast_node_evaluate(
+                variable_assignment_node->target->node.array_access->index,
+                context
+            );
+
+            if (index_value.type != VALUE_TYPE_NUMBER)
+                THROW("Index should be a number\n");
+
+            array_value_set(
+                array_value.value.as_array,
+                (ull_t)index_value.value.as_number,
                 value
             );
 

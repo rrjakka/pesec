@@ -18,6 +18,8 @@ value_t ast_node_evaluate(const ast_node_t* node, context_t* context)
         case AST_NODE_FUNCTION_DEFINITION: return function_definition_node_evaluate(node->node.function_definition, context);
         case AST_NODE_STRUCTURE_DEFINITION: return structure_definition_node_evaluate(node->node.structure_definition, context);
         case AST_NODE_STRUCTURE_FIELD_ACCESS: return structure_field_access_node_evaluate(node->node.structure_field_access, context);
+        case AST_NODE_ARRAY_DEFINITION: return array_definition_node_evaluate(node->node.array_definition, context);
+        case AST_NODE_ARRAY_ACCESS: return array_access_node_evaluate(node->node.array_access, context);
         case AST_NODE_STATEMENT_SEQUENCE: return statement_sequence_node_evaluate(node->node.statement_sequence, context);
         case AST_NODE_CONDITION: return condition_node_evaluate(node->node.condition, context);
         case AST_NODE_WHILE_LOOP: return while_loop_node_evaluate(node->node.while_loop, context);
@@ -31,44 +33,21 @@ void ast_node_free(ast_node_t* node)
 {
     switch(node->type)
     {
-        case AST_NODE_BINARY:
-            binary_op_node_free(node->node.binary_op);
-            break;
-        case AST_NODE_VARIABLE:
-            variable_node_free(node->node.variable);
-            break;
-        case AST_NODE_VARIABLE_DEFINITION:
-            variable_definition_node_free(node->node.variable_definition);
-            break;
-        case AST_NODE_VARIABLE_ASSIGNMENT:
-            variable_assignment_node_free(node->node.variable_assignment);
-            break;
-        case AST_NODE_FUNCTION_CALL:
-            function_call_node_free(node->node.function_call);
-            break;
-        case AST_NODE_FUNCTION_DEFINITION:
-            function_definition_node_free(node->node.function_definition);
-            break;
-        case AST_NODE_STRUCTURE_DEFINITION:
-            structure_definition_node_free(node->node.structure_definition);
-            break;
-        case AST_NODE_STRUCTURE_FIELD_ACCESS:
-            structure_field_access_node_free(node->node.structure_field_access);
-            break;
-        case AST_NODE_STATEMENT_SEQUENCE:
-            statement_sequence_node_free(node->node.statement_sequence);
-            break;
-        case AST_NODE_CONDITION:
-            condition_node_free(node->node.condition);
-            break;
-        case AST_NODE_WHILE_LOOP:
-            while_loop_node_free(node->node.while_loop);
-            break;
-        case AST_NODE_BREAK:
-            break_node_free(node->node._break);
-            break;
-        case AST_NODE_LITERAL:
-            break;
+        case AST_NODE_BINARY: binary_op_node_free(node->node.binary_op); break;
+        case AST_NODE_VARIABLE: variable_node_free(node->node.variable); break;
+        case AST_NODE_VARIABLE_DEFINITION: variable_definition_node_free(node->node.variable_definition); break;
+        case AST_NODE_VARIABLE_ASSIGNMENT: variable_assignment_node_free(node->node.variable_assignment); break;
+        case AST_NODE_FUNCTION_CALL: function_call_node_free(node->node.function_call); break;
+        case AST_NODE_FUNCTION_DEFINITION: function_definition_node_free(node->node.function_definition); break;
+        case AST_NODE_STRUCTURE_DEFINITION: structure_definition_node_free(node->node.structure_definition); break;
+        case AST_NODE_STRUCTURE_FIELD_ACCESS: structure_field_access_node_free(node->node.structure_field_access); break;
+        case AST_NODE_ARRAY_DEFINITION: array_definition_node_free(node->node.array_definition); break;
+        case AST_NODE_ARRAY_ACCESS: array_access_node_free(node->node.array_access); break;
+        case AST_NODE_STATEMENT_SEQUENCE: statement_sequence_node_free(node->node.statement_sequence); break;
+        case AST_NODE_CONDITION: condition_node_free(node->node.condition); break;
+        case AST_NODE_WHILE_LOOP: while_loop_node_free(node->node.while_loop); break;
+        case AST_NODE_BREAK: break_node_free(node->node._break); break;
+        case AST_NODE_LITERAL: break;
     }
 
     free(node);

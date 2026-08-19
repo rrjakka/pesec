@@ -1,0 +1,26 @@
+mutab a = [1, 2, fn() { println("hello"); }, 4, 5];
+
+a[2]();
+
+a[2] = struct {
+    x = [100, 200, 300]
+};
+
+mutab i = 0;
+
+while (i < 5)
+{
+    println(a[i]);
+    if (i == 2)
+    {
+        println("a[2] begin:");
+        mutab j = 0;
+        while (j < 3)
+        {
+            println(a[i].x[j]);
+            j = j + 1;
+        };
+        println("a[2] end:");
+    };
+    i = i + 1;
+};

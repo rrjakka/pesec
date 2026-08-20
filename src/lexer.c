@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "include/utils/throw.h"
-#include "include/utils/string.h"
+#include "../include/string_value.h"
 
 
 lexer_t* lexer_new(char* source, const unsigned long long length)
@@ -163,7 +163,7 @@ token_t lexer_next_string(lexer_t* lexer)
 {
     lexer_advance(lexer);
 
-    string_t string = string_new();
+    string_value_t* string = string_value_new();
 
     char current;
     while (lexer_can_advance(lexer) && (current = lexer_get_current_char(lexer)) != '"')
@@ -173,15 +173,17 @@ token_t lexer_next_string(lexer_t* lexer)
             lexer_advance(lexer);
             switch (lexer_get_current_char(lexer))
             {
-                case 'n': string_push_back(&string, '\n'); break;
-                case 't': string_push_back(&string, '\t'); break;
-                case 'r': string_push_back(&string, '\r'); break;
-                case 'b': string_push_back(&string, '\b'); break;
+                case '"': string_value_push_back(string, '\"'); break;
+                case 'n': string_value_push_back(string, '\n'); break;
+                case 't': string_value_push_back(string, '\t'); break;
+                case 'r': string_value_push_back(string, '\r'); break;
+                case 'b': string_value_push_back(string, '\b'); break;
+                default: break;
             }
         }
         else
         {
-            string_push_back(&string, current);
+            string_value_push_back(string, current);
         }
         lexer_advance(lexer);
     }

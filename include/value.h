@@ -8,13 +8,14 @@
 #define MAKE_VAL_STRUCT(x) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x })
 #define MAKE_VAL_ARR(x) ((value_t) { .type = VALUE_TYPE_ARRAY, .data.as_array = x })
 
+#define MAKE_VAL_STR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRING, .data.as_string = x, .control_flow = cf })
 #define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .data.as_number = x, .control_flow = cf })
 #define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .data.as_bool = x, .control_flow = cf })
 #define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .data.as_function = x, .control_flow = cf })
 #define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x, .control_flow = cf })
 #define MAKE_VAL_ARR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_ARRAY, .data.as_array = x, .control_flow = cf })
 
-#include "utils/string.h"
+#include "string_value.h"
 #include "control_flow.h"
 
 typedef struct FUNCTION_VALUE_STRUCT function_value_t;
@@ -33,7 +34,7 @@ typedef enum
 
 typedef union
 {
-    string_t as_string;
+    string_value_t* as_string;
     long double as_number;
     bool as_bool;
     function_value_t* as_function;
@@ -48,13 +49,15 @@ typedef struct
     control_flow_t control_flow;
 } value_t;
 
+void value_free(value_t value);
+
 bool value_get_boolean(value_t value);
 
 char* value_get_type(value_t value);
 
 void value_print(value_t value);
 
-void value_print_string(string_t value);
+void value_print_string(const string_value_t* value);
 
 void value_print_number(long double value);
 

@@ -4,14 +4,28 @@
 #include <stdlib.h>
 
 #include "include/array_value.h"
+#include "include/structure_value.h"
+#include "include/function_value.h"
 #include "include/utils/throw.h"
+
+void value_free(const value_t value)
+{
+    switch (value.type)
+    {
+        case VALUE_TYPE_ARRAY: array_value_free(value.data.as_array); break;
+        case VALUE_TYPE_STRING: string_value_free(value.data.as_string); break;
+        case VALUE_TYPE_STRUCTURE: structure_value_free(value.data.as_structure); break;
+        case VALUE_TYPE_FUNCTION: function_value_free(value.data.as_function); break;
+        default: break;
+    }
+}
 
 bool value_get_boolean(const value_t value)
 {
     switch (value.type)
     {
         case VALUE_TYPE_NUMBER: return value.data.as_number != 0;
-        case VALUE_TYPE_STRING: return value.data.as_string.size != 0;
+        case VALUE_TYPE_STRING: return value.data.as_string->size != 0;
         case VALUE_TYPE_BOOLEAN: return value.data.as_bool;
         case VALUE_TYPE_FUNCTION:
         case VALUE_TYPE_ARRAY:
@@ -51,14 +65,13 @@ void value_print(const value_t value)
     THROW("Value type '%d' is not a valid value type\n", value.type);
 }
 
-void value_print_string(const string_t value)
+void value_print_string(const string_value_t* value)
 {
-    printf("%s", value.data);
+    printf("%s", value->data);
 }
 
 void value_print_number(const long double value)
 {
-
     printf("%.64Lg", value);
 }
 
@@ -92,6 +105,9 @@ value_t value_operation_add(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
         return MAKE_VAL_NUM(left.data.as_number + right.data.as_number);
+
+    if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
+        return MAKE_VAL_STR(string_value_concat(left.data.as_string, right.data.as_string));
 
     THROW("Non number type can't use operator '+'\n");
 }
@@ -129,7 +145,7 @@ value_t value_operation_equals(const value_t left, const value_t right)
         return MAKE_VAL_BOOL(left.data.as_number == right.data.as_number);
 
     if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
-        return MAKE_VAL_BOOL(string_equals(left.data.as_string, right.data.as_string));
+        return MAKE_VAL_BOOL(string_value_equals(left.data.as_string, right.data.as_string));
 
     return MAKE_VAL_BOOL(false);
 }

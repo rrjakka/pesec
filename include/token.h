@@ -2,7 +2,7 @@
 #define PESEC_TOKEN_H
 
 #include "utils/string_view.h"
-#include "utils/string.h"
+#include "string_value.h"
 #include <stdio.h>
 
 typedef enum
@@ -46,7 +46,7 @@ typedef enum
 typedef union
 {
     string_view_t as_string_view;
-    string_t as_string;
+    string_value_t* as_string;
     long double as_number;
 } token_value_t;
 

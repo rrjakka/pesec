@@ -18,14 +18,14 @@ typedef struct CONTEXT_ITEM_STRUCT
 typedef struct CONTEXT_STRUCT
 {
     context_item_t** items;
-    unsigned long long size;
-    unsigned long long capacity;
+    ull_t size;
+    ull_t capacity;
     context_t* parent;
 } context_t;
 
 context_t* context_new(context_t* parent);
 
-unsigned long long context_hash(const context_t* context, string_view_t key);
+ull_t context_hash(const context_t* context, string_view_t key);
 
 void context_push(const context_t* context, string_view_t key, value_t value, bool constant);
 

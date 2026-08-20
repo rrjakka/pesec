@@ -13,7 +13,7 @@ void token_print(FILE* stream, const token_t token)
         case TOKEN_TYPE_KEYWORD:
             fprintf(stream, "keyword: %.*s", (unsigned int)token.value.as_string_view.length, token.value.as_string_view.data); break;
         case TOKEN_TYPE_STRING:
-            fprintf(stream, "string: %s", token.value.as_string.data); break;
+            fprintf(stream, "string: %s", token.value.as_string->data); break;
         case TOKEN_TYPE_EQUALS:
             fprintf(stream, "assign: %.*s", (unsigned int)token.value.as_string_view.length, token.value.as_string_view.data); break;
         case TOKEN_TYPE_EQUALS_EQUALS:

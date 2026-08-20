@@ -5,15 +5,13 @@
 
 #include "include/array_value.h"
 #include "include/function_value.h"
-#include "include/structure_value.h"
-#include "include/utils/string.h"
 #include "include/utils/throw.h"
 
 context_t* context_new(context_t* parent)
 {
     const auto context = (context_t*)malloc(sizeof(context_t));
 
-    context->capacity = 2048;
+    context->capacity = 1024;
     context->size = 0;
     context->items = (context_item_t**)calloc(context->capacity,sizeof(context_item_t*));
     context->parent = parent;
@@ -21,7 +19,7 @@ context_t* context_new(context_t* parent)
     return context;
 }
 
-unsigned long long context_hash(const context_t* context, const string_view_t key)
+ull_t context_hash(const context_t* context, const string_view_t key)
 {
     unsigned long long sum = 0;
     for (unsigned long long i = 0; i < key.length; i++)
@@ -33,7 +31,7 @@ unsigned long long context_hash(const context_t* context, const string_view_t ke
 
 void context_push(const context_t* context, const string_view_t key, const value_t value, bool constant)
 {
-    const unsigned long long hash_index = context_hash(context, key);
+    const ull_t hash_index = context_hash(context, key);
 
     const auto item = (context_item_t*)malloc(sizeof(context_item_t));
     item->key = key;
@@ -59,12 +57,14 @@ void context_set(const context_t* context, const string_view_t key, const value_
     context_item_t* node = context_get(context, key);
     if (node->constant)
         THROW("Variable %.*s is constant\n", (unsigned int)key.length, key.data);
+
+    value_free(node->value);
     node->value = value;
 }
 
 context_item_t* context_get(const context_t* context, const string_view_t key)
 {
-    const unsigned long long hash_index = context_hash(context, key);
+    const ull_t hash_index = context_hash(context, key);
 
     context_item_t* node = context->items[hash_index];
 
@@ -86,21 +86,14 @@ context_item_t* context_get(const context_t* context, const string_view_t key)
 
 void context_free(context_t* context)
 {
-    for (unsigned long long i = 0; i < context->capacity; ++i)
+    for (ull_t i = 0; i < context->capacity; ++i)
     {
         context_item_t* node = context->items[i];
 
-        while (node != nullptr)
+        while (node)
         {
             context_item_t* next = node->next;
-            switch (node->value.type)
-            {
-                case VALUE_TYPE_ARRAY: array_value_free(node->value.data.as_array); break;
-                case VALUE_TYPE_STRING: string_free(node->value.data.as_string); break;
-                case VALUE_TYPE_STRUCTURE: structure_value_free(node->value.data.as_structure); break;
-                case VALUE_TYPE_FUNCTION: function_value_free(node->value.data.as_function); break;
-                default: break;
-            }
+            value_free(node->value);
             free(node);
             node = next;
         }

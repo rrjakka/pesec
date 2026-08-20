@@ -14,5 +14,3 @@ println(b);
 
 # b = b + 1; - not allowed #
 # b = "Hello, Pesec!"; - not allowed #
-
-println();

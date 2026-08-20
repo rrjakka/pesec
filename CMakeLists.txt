@@ -14,11 +14,11 @@ add_executable(
         src/function_value.c                        include/function_value.h
         src/structure_value.c                       include/structure_value.h
         src/array_value.c                           include/array_value.h
+        src/string_value.c                          include/string_value.h
         src/control_flow.c                          include/control_flow.h
         src/parameter.c                             include/parameter.h
 
         src/utils/string_view.c                     include/utils/string_view.h
-        src/utils/string.c                          include/utils/string.h
         src/utils/throw.c                           include/utils/throw.h
 
         src/ast/ast_node.c                          include/ast/ast_node.h

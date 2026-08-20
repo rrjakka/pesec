@@ -69,7 +69,7 @@ value_t function_call_node_evaluate(const function_call_node_t* function_call_no
             );
     }
 
-    const auto function = callee_value.value.as_function;
+    const auto function = callee_value.data.as_function;
 
     if (function->parameter->count != statements_count)
     {

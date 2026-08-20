@@ -31,7 +31,7 @@ value_t structure_field_access_node_evaluate(const structure_field_access_node_t
         THROW("Variable is not structure");
     }
 
-    const structure_value_t* structure_value = item.value.as_structure;
+    const structure_value_t* structure_value = item.data.as_structure;
 
     return structure_value_get(structure_value, structure_field_node->field);
 }

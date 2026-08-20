@@ -3,15 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/array_value.h"
 #include "include/utils/throw.h"
 
 bool value_get_boolean(const value_t value)
 {
     switch (value.type)
     {
-        case VALUE_TYPE_NUMBER: return value.value.as_number != 0;
-        case VALUE_TYPE_STRING: return value.value.as_string.size != 0;
-        case VALUE_TYPE_BOOLEAN: return value.value.as_bool;
+        case VALUE_TYPE_NUMBER: return value.data.as_number != 0;
+        case VALUE_TYPE_STRING: return value.data.as_string.size != 0;
+        case VALUE_TYPE_BOOLEAN: return value.data.as_bool;
         case VALUE_TYPE_FUNCTION:
         case VALUE_TYPE_ARRAY:
         case VALUE_TYPE_STRUCTURE: return true;
@@ -20,7 +21,7 @@ bool value_get_boolean(const value_t value)
     THROW("Value type '%d' is not a valid value type\n", value.type);
 }
 
-char* value_get_type(value_t value)
+char* value_get_type(const value_t value)
 {
     switch (value.type)
     {
@@ -39,21 +40,58 @@ void value_print(const value_t value)
 {
     switch (value.type)
     {
-        case VALUE_TYPE_STRING: printf("%s", value.value.as_string.data); return;
-        case VALUE_TYPE_NUMBER: printf("%Lf", value.value.as_number); return;
-        case VALUE_TYPE_BOOLEAN: printf(value.value.as_bool ? "true" : "false"); return;
-        case VALUE_TYPE_FUNCTION: printf("<function:%p>", &value.value.as_function); return;
-        case VALUE_TYPE_STRUCTURE: printf("<structure:%p>", &value.value.as_structure); return;
-        case VALUE_TYPE_ARRAY: printf("<array:%p>", &value.value.as_array); return;
+        case VALUE_TYPE_STRING: value_print_string(value.data.as_string); return;
+        case VALUE_TYPE_NUMBER: value_print_number(value.data.as_number); return;
+        case VALUE_TYPE_BOOLEAN: value_print_boolean(value.data.as_bool); return;
+        case VALUE_TYPE_FUNCTION: value_print_function(value.data.as_function); return;
+        case VALUE_TYPE_STRUCTURE: value_print_structure(value.data.as_structure); return;
+        case VALUE_TYPE_ARRAY: value_print_array(value.data.as_array); return;
     }
 
     THROW("Value type '%d' is not a valid value type\n", value.type);
 }
 
+void value_print_string(const string_t value)
+{
+    printf("%s", value.data);
+}
+
+void value_print_number(const long double value)
+{
+
+    printf("%.64Lg", value);
+}
+
+void value_print_boolean(const bool value)
+{
+    printf(value ? "true" : "false");
+}
+
+void value_print_function(const function_value_t* value)
+{
+    printf("<function:%p>", &value);
+}
+
+void value_print_structure(const structure_value_t* value)
+{
+    printf("<structure:%p>", &value);
+}
+
+void value_print_array(const array_value_t* value)
+{
+    printf("[");
+    for (ull_t i=0; i < value->size; ++i)
+    {
+        if (i > 0) printf(", ");
+        value_print(value->values[i]);
+    }
+    printf("]");
+}
+
 value_t value_operation_add(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_NUM(left.value.as_number + right.value.as_number);
+        return MAKE_VAL_NUM(left.data.as_number + right.data.as_number);
 
     THROW("Non number type can't use operator '+'\n");
 }
@@ -61,7 +99,7 @@ value_t value_operation_add(const value_t left, const value_t right)
 value_t value_operation_sub(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_NUM(left.value.as_number - right.value.as_number);
+        return MAKE_VAL_NUM(left.data.as_number - right.data.as_number);
 
     THROW("Non number type can't use operator '-'\n");
 }
@@ -69,7 +107,7 @@ value_t value_operation_sub(const value_t left, const value_t right)
 value_t value_operation_mul(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_NUM(left.value.as_number * right.value.as_number);
+        return MAKE_VAL_NUM(left.data.as_number * right.data.as_number);
 
     THROW("Non number type can't use operator '*'\n");
 }
@@ -78,9 +116,9 @@ value_t value_operation_div(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
     {
-        if (right.value.as_number == 0)
+        if (right.data.as_number == 0)
             THROW("Division by zero is not allowed\n");
-        return MAKE_VAL_NUM(left.value.as_number / right.value.as_number);
+        return MAKE_VAL_NUM(left.data.as_number / right.data.as_number);
     }
     THROW("Non number type can't use operator '/'\n");
 }
@@ -88,10 +126,10 @@ value_t value_operation_div(const value_t left, const value_t right)
 value_t value_operation_equals(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_BOOL(left.value.as_number == right.value.as_number);
+        return MAKE_VAL_BOOL(left.data.as_number == right.data.as_number);
 
     if (left.type == VALUE_TYPE_STRING && right.type == VALUE_TYPE_STRING)
-        return MAKE_VAL_BOOL(string_equals(left.value.as_string, right.value.as_string));
+        return MAKE_VAL_BOOL(string_equals(left.data.as_string, right.data.as_string));
 
     return MAKE_VAL_BOOL(false);
 }
@@ -99,7 +137,7 @@ value_t value_operation_equals(const value_t left, const value_t right)
 value_t value_operation_less_or_equals(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_BOOL(left.value.as_number <= right.value.as_number);
+        return MAKE_VAL_BOOL(left.data.as_number <= right.data.as_number);
 
     return MAKE_VAL_BOOL(false);
 }
@@ -107,7 +145,7 @@ value_t value_operation_less_or_equals(const value_t left, const value_t right)
 value_t value_operation_less(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_BOOL(left.value.as_number < right.value.as_number);
+        return MAKE_VAL_BOOL(left.data.as_number < right.data.as_number);
 
     return MAKE_VAL_BOOL(false);
 }
@@ -115,7 +153,7 @@ value_t value_operation_less(const value_t left, const value_t right)
 value_t value_operation_greater_or_equals(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_BOOL(left.value.as_number >= right.value.as_number);
+        return MAKE_VAL_BOOL(left.data.as_number >= right.data.as_number);
 
     return MAKE_VAL_BOOL(false);
 }
@@ -123,7 +161,7 @@ value_t value_operation_greater_or_equals(const value_t left, const value_t righ
 value_t value_operation_greater(const value_t left, const value_t right)
 {
     if (left.type == VALUE_TYPE_NUMBER && right.type == VALUE_TYPE_NUMBER)
-        return MAKE_VAL_BOOL(left.value.as_number > right.value.as_number);
+        return MAKE_VAL_BOOL(left.data.as_number > right.data.as_number);
 
     return MAKE_VAL_BOOL(false);
 }

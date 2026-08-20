@@ -44,7 +44,7 @@ value_t variable_assignment_node_evaluate(const variable_assignment_node_t* vari
                 THROW("Cannot assign a field to a non structure\n");
 
             structure_value_set(
-                object_value.value.as_structure,
+                object_value.data.as_structure,
                 variable_assignment_node->target->node.structure_field_access->field,
                 value
             );
@@ -68,8 +68,8 @@ value_t variable_assignment_node_evaluate(const variable_assignment_node_t* vari
                 THROW("Index should be a number\n");
 
             array_value_set(
-                array_value.value.as_array,
-                (ull_t)index_value.value.as_number,
+                array_value.data.as_array,
+                (ull_t)index_value.data.as_number,
                 value
             );
 

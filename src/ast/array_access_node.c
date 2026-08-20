@@ -37,8 +37,8 @@ value_t array_access_node_evaluate(const array_access_node_t* array_access_node,
         THROW("Index should be an number");
     }
 
-    const array_value_t* array_value = array.value.as_array;
+    const array_value_t* array_value = array.data.as_array;
 
 
-    return array_value_get(array_value, (ull_t)index.value.as_number);
+    return array_value_get(array_value, (ull_t)index.data.as_number);
 }

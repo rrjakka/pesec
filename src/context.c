@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/array_value.h"
+#include "include/function_value.h"
+#include "include/structure_value.h"
+#include "include/utils/string.h"
 #include "include/utils/throw.h"
 
 context_t* context_new(context_t* parent)
@@ -89,6 +93,14 @@ void context_free(context_t* context)
         while (node != nullptr)
         {
             context_item_t* next = node->next;
+            switch (node->value.type)
+            {
+                case VALUE_TYPE_ARRAY: array_value_free(node->value.data.as_array); break;
+                case VALUE_TYPE_STRING: string_free(node->value.data.as_string); break;
+                case VALUE_TYPE_STRUCTURE: structure_value_free(node->value.data.as_structure); break;
+                case VALUE_TYPE_FUNCTION: function_value_free(node->value.data.as_function); break;
+                default: break;
+            }
             free(node);
             node = next;
         }

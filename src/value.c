@@ -8,15 +8,29 @@
 #include "include/function_value.h"
 #include "include/utils/throw.h"
 
-void value_free(const value_t value)
+void value_free(const value_t* value)
 {
-    switch (value.type)
+    switch (value->type)
     {
-        case VALUE_TYPE_ARRAY: array_value_free(value.data.as_array); break;
-        case VALUE_TYPE_STRING: string_value_free(value.data.as_string); break;
-        case VALUE_TYPE_STRUCTURE: structure_value_free(value.data.as_structure); break;
-        case VALUE_TYPE_FUNCTION: function_value_free(value.data.as_function); break;
+        case VALUE_TYPE_ARRAY: array_value_free(value->data.as_array); break;
+        case VALUE_TYPE_STRING: string_value_free(value->data.as_string); break;
+        case VALUE_TYPE_STRUCTURE: structure_value_free(value->data.as_structure); break;
+        case VALUE_TYPE_FUNCTION: function_value_free(value->data.as_function); break;
         default: break;
+    }
+}
+
+void value_increase_reference(value_t* value)
+{
+    ++value->reference_count;
+}
+
+void value_decrease_reference(value_t* value)
+{
+    --value->reference_count;
+    if (value->reference_count <= 0)
+    {
+        value_free(value);
     }
 }
 

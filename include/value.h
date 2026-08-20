@@ -1,19 +1,19 @@
 #ifndef PESEC_VALUE_H
 #define PESEC_VALUE_H
 
-#define MAKE_VAL_STR(x) ((value_t) { .type = VALUE_TYPE_STRING, .data.as_string = x })
-#define MAKE_VAL_NUM(x) ((value_t) { .type = VALUE_TYPE_NUMBER, .data.as_number = x })
-#define MAKE_VAL_BOOL(x) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .data.as_bool = x })
-#define MAKE_VAL_FUNC(x) ((value_t) { .type = VALUE_TYPE_FUNCTION, .data.as_function = x })
-#define MAKE_VAL_STRUCT(x) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x })
-#define MAKE_VAL_ARR(x) ((value_t) { .type = VALUE_TYPE_ARRAY, .data.as_array = x })
+#define MAKE_VAL_STR(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_STRING, .data.as_string = x })
+#define MAKE_VAL_NUM(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_NUMBER, .data.as_number = x })
+#define MAKE_VAL_BOOL(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_BOOLEAN, .data.as_bool = x })
+#define MAKE_VAL_FUNC(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_FUNCTION, .data.as_function = x })
+#define MAKE_VAL_STRUCT(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x })
+#define MAKE_VAL_ARR(x) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_ARRAY, .data.as_array = x })
 
-#define MAKE_VAL_STR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRING, .data.as_string = x, .control_flow = cf })
-#define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .type = VALUE_TYPE_NUMBER, .data.as_number = x, .control_flow = cf })
-#define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .type = VALUE_TYPE_BOOLEAN, .data.as_bool = x, .control_flow = cf })
-#define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .type = VALUE_TYPE_FUNCTION, .data.as_function = x, .control_flow = cf })
-#define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x, .control_flow = cf })
-#define MAKE_VAL_ARR_CF(x, cf) ((value_t) { .type = VALUE_TYPE_ARRAY, .data.as_array = x, .control_flow = cf })
+#define MAKE_VAL_STR_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_STRING, .data.as_string = x, .control_flow = cf })
+#define MAKE_VAL_NUM_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_NUMBER, .data.as_number = x, .control_flow = cf })
+#define MAKE_VAL_BOOL_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_BOOLEAN, .data.as_bool = x, .control_flow = cf })
+#define MAKE_VAL_FUNC_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_FUNCTION, .data.as_function = x, .control_flow = cf })
+#define MAKE_VAL_STRUCT_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_STRUCTURE, .data.as_structure = x, .control_flow = cf })
+#define MAKE_VAL_ARR_CF(x, cf) ((value_t) { .reference_count = 1, .type = VALUE_TYPE_ARRAY, .data.as_array = x, .control_flow = cf })
 
 #include "string_value.h"
 #include "control_flow.h"
@@ -34,9 +34,9 @@ typedef enum
 
 typedef union
 {
-    string_value_t* as_string;
     long double as_number;
     bool as_bool;
+    string_value_t* as_string;
     function_value_t* as_function;
     structure_value_t* as_structure;
     array_value_t* as_array;
@@ -44,12 +44,17 @@ typedef union
 
 typedef struct
 {
+    ull_t reference_count;
     value_type_t type;
     value_value_t data;
     control_flow_t control_flow;
 } value_t;
 
-void value_free(value_t value);
+void value_free(const value_t* value);
+
+void value_increase_reference(value_t* value);
+
+void value_decrease_reference(value_t* value);
 
 bool value_get_boolean(value_t value);
 

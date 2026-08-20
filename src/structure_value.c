@@ -7,6 +7,7 @@
 structure_value_t* structure_value_new()
 {
     const auto structure_value = (structure_value_t*) malloc(sizeof(structure_value_t));
+
     structure_value->context = context_new(nullptr);
 
     return structure_value;

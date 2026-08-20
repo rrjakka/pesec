@@ -34,6 +34,7 @@ value_t while_loop_node_evaluate(const while_loop_node_t* while_loop_node, conte
         if (result.control_flow == CONTROL_FLOW_BREAK)
         {
             result.control_flow = CONTROL_FLOW_NONE;
+            context_free(local_context);
             return result;
         }
     }

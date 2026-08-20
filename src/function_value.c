@@ -7,9 +7,11 @@
 function_value_t* function_value_new(parameter_t* parameter, const function_value_value_t body, const function_value_type_t type)
 {
     const auto function_value = (function_value_t*) malloc(sizeof(function_value_t));
+
     function_value->parameter = parameter;
     function_value->type = type;
     function_value->body = body;
+
     return function_value;
 }
 

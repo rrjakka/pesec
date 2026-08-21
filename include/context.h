@@ -27,7 +27,7 @@ context_t* context_new(context_t* parent);
 
 ull_t context_hash(const context_t* context, string_view_t key);
 
-void context_push(const context_t* context, string_view_t key, value_t value, bool constant);
+void context_push(context_t* context, string_view_t key, value_t value, bool constant);
 
 void context_set(const context_t* context, string_view_t key, value_t value);
 

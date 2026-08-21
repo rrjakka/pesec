@@ -3,13 +3,16 @@
 #include "include/ast/ast_node.h"
 #include <stdlib.h>
 
-ast_node_t* statement_sequence_node_new()
+ast_node_t* statement_sequence_node_new(bool local)
 {
     const auto node = (ast_node_t*)malloc(sizeof(ast_node_t));
+
     node->type = AST_NODE_STATEMENT_SEQUENCE;
     node->node.statement_sequence = (statement_sequence_node_t*)malloc(sizeof(statement_sequence_node_t));
     node->node.statement_sequence->statements = nullptr;
     node->node.statement_sequence->count = 0;
+    node->node.statement_sequence->local = local;
+
     return node;
 }
 
@@ -59,13 +62,14 @@ void statement_sequence_node_free(statement_sequence_node_t* statement_sequence_
 value_t statement_sequence_node_evaluate(const statement_sequence_node_t* statement_sequence_node, context_t* context)
 {
     value_t result;
+    result.reference_count = 1;
     result.type = VALUE_TYPE_NUMBER;
     result.data.as_number = 0;
     result.control_flow = CONTROL_FLOW_NONE;
 
     const statement_sequence_node_queue_t* current = statement_sequence_node->statements;
 
-    context_t* local_context = context_new(context);
+    context_t* local_context = statement_sequence_node->local ? context_new(context) : context;
 
     while (current)
     {
@@ -82,7 +86,8 @@ value_t statement_sequence_node_evaluate(const statement_sequence_node_t* statem
         current = current->next;
     }
 
-    context_free(local_context);
+    if (statement_sequence_node->local)
+        context_free(local_context);
 
     return result;
 }

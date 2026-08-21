@@ -1,0 +1,9 @@
+const PI = 3.1415926535897932384626433832795028841971693993751058209749445923;
+
+const pow = fn(x) x * x;
+const lerp = fn(a, b, t) (1 - t) * a + (t * b);
+
+const to_rad = fn(deg) {
+    # TODO: fix context scope inside structures(or mb make module_value) #
+    3.1415926535897932384626433832795028841971693993751058209749445923 / 180 * deg;
+};

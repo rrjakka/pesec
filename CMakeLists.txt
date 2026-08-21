@@ -18,6 +18,7 @@ add_executable(
         src/control_flow.c                          include/control_flow.h
         src/parameter.c                             include/parameter.h
 
+        src/utils/execute_file.c                    include/utils/execute_file.h
         src/utils/string_view.c                     include/utils/string_view.h
         src/utils/throw.c                           include/utils/throw.h
 
@@ -34,6 +35,7 @@ add_executable(
         src/ast/statement_sequence_node.c           include/ast/statement_sequence_node.h
         src/ast/variable_definition_node.c          include/ast/variable_definition_node.h
         src/ast/variable_assignment_node.c          include/ast/variable_assignment_node.h
+        src/ast/import_node.c                       include/ast/import_node.h
 
         src/ast/condition_node.c                    include/ast/condition_node.h
         src/ast/while_loop_node.c                   include/ast/while_loop_node.h

@@ -13,12 +13,21 @@ structure_value_t* structure_value_new()
     return structure_value;
 }
 
-void structure_value_push(const structure_value_t* structure_value, string_view_t name, value_t value)
+structure_value_t* structure_value_new_with(context_t* context)
+{
+    const auto structure_value = (structure_value_t*) malloc(sizeof(structure_value_t));
+
+    structure_value->context = context;
+
+    return structure_value;
+}
+
+void structure_value_push(const structure_value_t* structure_value, const string_view_t name, const value_t value)
 {
     context_push(structure_value->context, name, value, false);
 }
 
-void structure_value_set(const structure_value_t* structure_value, string_view_t name, value_t value)
+void structure_value_set(const structure_value_t* structure_value, const string_view_t name, const value_t value)
 {
     context_set(structure_value->context, name, value);
 }

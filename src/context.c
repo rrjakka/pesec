@@ -29,7 +29,7 @@ ull_t context_hash(const context_t* context, const string_view_t key)
     return sum % context->capacity;
 }
 
-void context_push(const context_t* context, const string_view_t key, value_t value, const bool constant)
+void context_push(context_t* context, const string_view_t key, value_t value, const bool constant)
 {
     const ull_t hash_index = context_hash(context, key);
 
@@ -51,6 +51,8 @@ void context_push(const context_t* context, const string_view_t key, value_t val
         node->next = item;
     }
     else context->items[hash_index] = item;
+
+    ++context->size;
 }
 
 void context_set(const context_t* context, const string_view_t key, value_t value)

@@ -86,7 +86,7 @@ ast_node_t *parser_parse(parser_t *parser)
 
 ast_node_t *parser_parse_statement_sequence(parser_t *parser, const bool between_braces)
 {
-    ast_node_t *statement_sequence = statement_sequence_node_new();
+    ast_node_t *statement_sequence = statement_sequence_node_new(between_braces);
 
     if (between_braces) parser_eat(parser, TOKEN_TYPE_LBRACE);
 
@@ -128,6 +128,7 @@ ast_node_t *parser_parse_keyword(parser_t *parser)
     if (string_view_equals_cstr(name, "if")) return parser_parse_if(parser);
     if (string_view_equals_cstr(name, "while")) return parser_parse_while(parser);
     if (string_view_equals_cstr(name, "break")) return parser_parse_break(parser);
+    if (string_view_equals_cstr(name, "import")) return parser_parse_import(parser);
 
     THROW("unknown keyword\n");
 }
@@ -164,7 +165,7 @@ ast_node_t *parser_parse_function_call(parser_t *parser, ast_node_t* callee)
 {
     parser_eat(parser, TOKEN_TYPE_LPAREN);
 
-    ast_node_t *statement_sequence = statement_sequence_node_new();
+    ast_node_t *statement_sequence = statement_sequence_node_new(true);
 
     if (!parser_match(parser, TOKEN_TYPE_RPAREN))
     {
@@ -215,7 +216,7 @@ ast_node_t *parser_parse_function_definition(parser_t *parser)
 ast_node_t *parser_parse_structure_definition(parser_t *parser)
 {
     parameter_t* parameter = parameter_new();
-    ast_node_t* values = statement_sequence_node_new();
+    ast_node_t* values = statement_sequence_node_new(true);
 
     parser_eat(parser, TOKEN_TYPE_LBRACE);
 
@@ -270,7 +271,7 @@ ast_node_t *parser_parse_array_definition(parser_t *parser)
 {
     parser_eat(parser, TOKEN_TYPE_LBRACKET);
 
-    ast_node_t *statement_sequence = statement_sequence_node_new();
+    ast_node_t *statement_sequence = statement_sequence_node_new(true);
 
     if (!parser_match(parser, TOKEN_TYPE_RBRACKET))
     {
@@ -338,6 +339,13 @@ ast_node_t *parser_parse_break(parser_t *parser)
     }
 
     return break_node_new(break_body);
+}
+
+ast_node_t *parser_parse_import(parser_t *parser)
+{
+    ast_node_t* source = parser_parse_statement(parser);
+
+    return import_node_new(source);
 }
 
 ast_node_t* parser_parse_statement(parser_t* parser)

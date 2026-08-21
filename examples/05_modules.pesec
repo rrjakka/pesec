@@ -1,0 +1,5 @@
+const math = import "../examples/math.pesec";
+
+println(math.PI);
+
+println(math.to_rad(90));

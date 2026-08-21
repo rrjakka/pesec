@@ -15,11 +15,12 @@ typedef struct STATEMENT_SEQUENCE_NODE_QUEUE_STRUCT
 
 typedef struct STATEMENT_SEQUENCE_NODE_STRUCT
 {
-    unsigned long long count;
+    bool local;
+    ull_t count;
     statement_sequence_node_queue_t* statements;
 } statement_sequence_node_t;
 
-ast_node_t* statement_sequence_node_new();
+ast_node_t* statement_sequence_node_new(bool local);
 
 void statement_sequence_node_push(statement_sequence_node_t* statement_sequence_node, ast_node_t* statement);
 
